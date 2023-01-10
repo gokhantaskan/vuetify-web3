@@ -3,8 +3,8 @@ import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import nodePolyfills from "rollup-plugin-polyfill-node";
-import { defineConfig } from "vitest/config";
 import vuetify from "vite-plugin-vuetify";
+import { defineConfig } from "vitest/config";
 
 const MODE = process.env.NODE_ENV;
 const development = MODE === "development";
