@@ -15,6 +15,7 @@ const twTheme: ThemeDefinition = {
     info: colors.violet["500"],
     success: colors.emerald["500"],
     warning: colors.amber["500"],
+    danger: colors.rose["500"],
   },
 };
 
@@ -41,8 +42,13 @@ const vuetify = createVuetify({
     },
     VDialog: {
       attach: "#app",
-      persistent: false,
-      noClickAnimation: true,
+      persistent: true,
+      // noClickAnimation: false,
+      maxWidth: "720px",
+    },
+    VOverlay: {
+      attach: "#app",
+      zIndex: 100,
     },
   },
   icons: {

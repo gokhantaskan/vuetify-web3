@@ -1,4 +1,5 @@
 import "./assets/styles/tailwind.scss";
+import "./assets/styles/onboard.scss";
 import "./assets/styles/main.scss";
 
 import { createPinia } from "pinia";
