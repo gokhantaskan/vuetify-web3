@@ -2,7 +2,6 @@
 import { reactive } from "vue";
 
 import AppDialog from "@/components/AppDialog/AppDialog.vue";
-import ConnectWallet from "@/components/ConnectWallet/ConnectWallet.vue";
 import BaseLayout from "@/layouts/BaseLayout.vue";
 
 const msg = `
@@ -29,7 +28,6 @@ const state = reactive({
       <v-btn @click="state.isDialogOpen = true">Dialog</v-btn>
       <v-btn-base>Useless</v-btn-base>
     </div>
-    <ConnectWallet />
   </BaseLayout>
 
   <AppDialog

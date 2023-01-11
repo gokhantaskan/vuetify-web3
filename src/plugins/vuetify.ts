@@ -1,7 +1,7 @@
 import colors from "tailwindcss/colors";
 import { type ThemeDefinition, createVuetify } from "vuetify";
 import { md2 } from "vuetify/blueprints";
-import { VBtn } from "vuetify/components";
+import { VBtn, VDialog } from "vuetify/components";
 import { aliases, mdi } from "vuetify/iconsets/mdi-svg";
 
 const twTheme: ThemeDefinition = {
@@ -29,6 +29,7 @@ const vuetify = createVuetify({
   },
   aliases: {
     VBtnBase: VBtn,
+    VDialogBase: VDialog,
   },
   defaults: {
     VBtn: {
@@ -43,8 +44,18 @@ const vuetify = createVuetify({
     VDialog: {
       attach: "#app",
       persistent: true,
-      // noClickAnimation: false,
+      noClickAnimation: false,
       maxWidth: "720px",
+    },
+    VDialogBase: {
+      attach: "#app",
+      persistent: false,
+      width: "75%",
+      maxWidth: "480px",
+      maxHeight: "75vh",
+      VCard: {
+        elevation: 2,
+      },
     },
     VOverlay: {
       attach: "#app",

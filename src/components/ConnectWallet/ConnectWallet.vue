@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useOnboard } from "@web3-onboard/vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import { trimText } from "@/utils/trim_text";
 
@@ -12,11 +12,10 @@ const {
   disconnectConnectedWallet,
 } = useOnboard();
 
-const account = computed(
-  () =>
-    connectedWallet.value?.accounts[0].ens?.name ??
-    trimText(connectedWallet.value?.accounts[0].address || "")
-);
+const ens = computed(() => connectedWallet.value?.accounts[0].ens?.name);
+const address = computed(() => connectedWallet.value?.accounts[0].address);
+
+const dialog = ref(false);
 
 const connect = async () => {
   if (!alreadyConnectedWallets.value.length) await connectWallet();
@@ -28,23 +27,44 @@ const disconnect = async () => {
 </script>
 
 <template>
-  <div>
-    <template v-if="!connectedWallet">
+  <template v-if="!connectedWallet">
+    <v-btn
+      :loading="connectingWallet"
+      variant="tonal"
+      @click="connect"
+    >
+      Connect
+    </v-btn>
+  </template>
+  <template v-else>
+    <v-btn-group density="compact">
       <v-btn
-        :loading="connectingWallet"
-        @click="connect"
+        variant="plain"
+        color="white"
+        @click="() => (dialog = true)"
       >
-        Connect
+        {{ ens || trimText(address || "") }}
       </v-btn>
-    </template>
-    <template v-else>
       <v-btn
         color="danger"
+        variant="tonal"
         @click="disconnect"
       >
         Disconnect
       </v-btn>
-      <span class="tw-inline-block tw-ml-4">{{ account }}</span>
-    </template>
-  </div>
+    </v-btn-group>
+  </template>
+  <v-dialog-base v-model="dialog">
+    <v-card class="tw-p-4 tw-text-center">
+      <div class="tw-space-y-4">
+        <template v-if="ens">
+          <p class="tw-text-xl tw-font-medium">{{ ens }}</p>
+          <p>{{ trimText(address || "") }}</p>
+        </template>
+        <template v-else>
+          <p class="tw-text-xl tw-font-medium">{{ trimText(address || "") }}</p>
+        </template>
+      </div>
+    </v-card>
+  </v-dialog-base>
 </template>

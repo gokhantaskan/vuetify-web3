@@ -5,13 +5,13 @@ import { init, useOnboard } from "@web3-onboard/vue";
 import walletConnectModule from "@web3-onboard/walletconnect";
 import { onMounted, ref, watchEffect } from "vue";
 
+import ConnectWallet from "./components/ConnectWallet/ConnectWallet.vue";
+
 const drawer = ref<boolean>(false);
 const overlay = ref<boolean>(false);
 const injected = injectedModule();
 const walletConnect = walletConnectModule();
-const rpcUrl =
-  import.meta.env.VITE_ALCHEMY_API_URL ||
-  "https://eth-rpc.gateway.pokt.network";
+const rpcUrl = "https://eth-rpc.gateway.pokt.network";
 
 init({
   wallets: [injected, walletConnect],
@@ -71,6 +71,9 @@ watchEffect(() => {
       <v-btn icon>
         <v-icon :icon="mdiMagnify"></v-icon>
       </v-btn>
+      <div class="tw-mr-[10px]">
+        <ConnectWallet />
+      </div>
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
