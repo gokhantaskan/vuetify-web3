@@ -9,7 +9,9 @@ const drawer = ref<boolean>(false);
 const overlay = ref<boolean>(false);
 const injected = injectedModule();
 const walletConnect = walletConnectModule();
-const rpcUrl = import.meta.env.VITE_ALCHEMY_API_URL;
+const rpcUrl =
+  import.meta.env.VITE_ALCHEMY_API_URL ||
+  "https://eth-rpc.gateway.pokt.network";
 
 init({
   wallets: [injected, walletConnect],
