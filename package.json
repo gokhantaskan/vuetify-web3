@@ -21,7 +21,6 @@
     "@web3-onboard/injected-wallets": "^2.5.0",
     "@web3-onboard/vue": "^2.4.4",
     "@web3-onboard/walletconnect": "^2.2.2",
-    "@web3-onboard/web3auth": "^2.1.4",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",

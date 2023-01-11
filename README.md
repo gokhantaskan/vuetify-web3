@@ -1,6 +1,8 @@
 # vue3-vite
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue and Vite with stable Vuetify release. The best Tailwind implementation to make the development process easier.
+
+Blocknative's Web3 Onboard for the best web3 connection experience.
 
 ## Recommended IDE Setup
 
@@ -61,8 +63,9 @@ npm run build
 npm run test:e2e
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Lint with [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/)
 
 ```sh
 npm run lint
+npm run format
 ```
