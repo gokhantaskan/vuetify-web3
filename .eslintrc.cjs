@@ -36,16 +36,5 @@ module.exports = {
         asyncArrow: "always",
       },
     ],
-    // "vue/max-attributes-per-line": [
-    //   "error",
-    //   {
-    //     singleline: {
-    //       max: 1,
-    //     },
-    //     multiline: {
-    //       max: 1,
-    //     },
-    //   },
-    // ],
   },
 };

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { mdiLogin, mdiLogout } from "@mdi/js";
 import { useOnboard } from "@web3-onboard/vue";
 import { computed, ref } from "vue";
 
@@ -28,34 +29,53 @@ const disconnect = async () => {
 
 <template>
   <template v-if="!connectedWallet">
-    <v-btn
-      :loading="connectingWallet"
-      variant="tonal"
-      @click="connect"
+    <v-tooltip
+      text="Connect"
+      location="bottom"
     >
-      Connect
-    </v-btn>
+      <template #activator="{ props }">
+        <v-btn
+          v-bind="props"
+          :loading="connectingWallet"
+          variant="tonal"
+          @click="connect"
+        >
+          <v-icon :icon="mdiLogin"></v-icon>
+        </v-btn>
+      </template>
+    </v-tooltip>
   </template>
   <template v-else>
     <v-btn-group density="compact">
       <v-btn
-        variant="plain"
+        variant="tonal"
         color="white"
         @click="() => (dialog = true)"
       >
         {{ ens || trimText(address || "") }}
       </v-btn>
-      <v-btn
-        color="danger"
-        variant="tonal"
-        @click="disconnect"
+      <v-tooltip
+        text="Disconnect"
+        location="bottom"
       >
-        Disconnect
-      </v-btn>
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            color="danger"
+            variant="tonal"
+            @click="disconnect"
+          >
+            <v-icon :icon="mdiLogout"></v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
     </v-btn-group>
   </template>
   <v-dialog-base v-model="dialog">
-    <v-card class="tw-p-4 tw-text-center">
+    <v-card
+      :elevation="2"
+      class="tw-p-4 tw-text-center"
+    >
       <div class="tw-space-y-4">
         <template v-if="ens">
           <p class="tw-text-xl tw-font-medium">{{ ens }}</p>
