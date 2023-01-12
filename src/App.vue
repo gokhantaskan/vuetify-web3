@@ -10,7 +10,6 @@ import { useWeb3Provider } from "@/composables/useWeb3Provider";
 /**
  * Web3 Onboard
  */
-const drawer = ref<boolean>(false);
 const injected = injectedModule();
 const walletConnect = walletConnectModule();
 
@@ -51,10 +50,10 @@ init({
  * State
  * ! `useOnboard` should come after `init` to initialize the hooks properly
  */
+const drawer = ref<boolean>(false);
+const { jsonRPCProvider } = useWeb3Provider();
 const { connectWallet, alreadyConnectedWallets, connectedWallet } =
   useOnboard();
-
-const { jsonRPCProvider } = useWeb3Provider();
 
 onMounted(async () => {
   if (alreadyConnectedWallets.value.length) {
@@ -75,7 +74,10 @@ watchEffect(() => {
 
 <template>
   <v-app>
-    <v-app-bar :elevation="2">
+    <v-app-bar
+      :elevation="2"
+      :style="{ zIndex: 80 }"
+    >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Application</v-app-bar-title>
       <v-spacer></v-spacer>
