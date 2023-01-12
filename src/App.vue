@@ -2,10 +2,9 @@
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useOnboard } from "@web3-onboard/vue";
 import walletConnectModule from "@web3-onboard/walletconnect";
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
 
 import ConnectWallet from "@/components/ConnectWallet/ConnectWallet.vue";
-import { useWeb3Provider } from "@/composables/useWeb3Provider";
 
 /**
  * Web3 Onboard
@@ -51,9 +50,7 @@ init({
  * ! `useOnboard` should come after `init` to initialize the hooks properly
  */
 const drawer = ref<boolean>(false);
-const { jsonRPCProvider } = useWeb3Provider();
-const { connectWallet, alreadyConnectedWallets, connectedWallet } =
-  useOnboard();
+const { connectWallet, alreadyConnectedWallets } = useOnboard();
 
 onMounted(async () => {
   if (alreadyConnectedWallets.value.length) {
@@ -64,11 +61,6 @@ onMounted(async () => {
       },
     });
   }
-});
-
-watchEffect(() => {
-  console.log("wallet", connectedWallet.value);
-  console.log("jsonRPCProvider", jsonRPCProvider.value);
 });
 </script>
 

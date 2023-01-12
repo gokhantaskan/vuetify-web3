@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { mdiLogin, mdiLogout } from "@mdi/js";
+import { mdiContentCopy, mdiLogin, mdiLogout, mdiOpenInNew } from "@mdi/js";
 import { useOnboard } from "@web3-onboard/vue";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
+import { useWeb3Provider } from "@/composables/useWeb3Provider";
+import { useBalancesStore } from "@/stores/balances";
 import { trimText } from "@/utils/trim_text";
 
 const {
@@ -13,9 +15,11 @@ const {
   disconnectConnectedWallet,
 } = useOnboard();
 
+const balancesStore = useBalancesStore();
+const { web3Provider } = useWeb3Provider();
+
 const ens = computed(() => connectedWallet.value?.accounts[0].ens?.name);
 const address = computed(() => connectedWallet.value?.accounts[0].address);
-
 const dialog = ref(false);
 
 const connect = async () => {
@@ -25,14 +29,19 @@ const connect = async () => {
 const disconnect = async () => {
   await disconnectConnectedWallet();
 };
+
+watch([address, web3Provider], async ([address, web3Provider]) => {
+  if (address && web3Provider) {
+    balancesStore.getEthBalance(web3Provider, address);
+  } else {
+    dialog.value = false;
+  }
+});
 </script>
 
 <template>
   <template v-if="!connectedWallet">
-    <v-tooltip
-      text="Connect"
-      location="bottom"
-    >
+    <v-tooltip text="Connect">
       <template #activator="{ props }">
         <v-btn
           v-bind="props"
@@ -54,10 +63,7 @@ const disconnect = async () => {
       >
         {{ ens || trimText(address || "") }}
       </v-btn>
-      <v-tooltip
-        text="Disconnect"
-        location="bottom"
-      >
+      <v-tooltip text="Disconnect">
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -71,19 +77,49 @@ const disconnect = async () => {
       </v-tooltip>
     </v-btn-group>
   </template>
+  <!-- Dialog -->
   <v-dialog-base v-model="dialog">
     <v-card
       :elevation="2"
       class="tw-p-4 tw-text-center"
     >
-      <div class="tw-space-y-4">
+      <div>
         <template v-if="ens">
-          <p class="tw-text-xl tw-font-medium">{{ ens }}</p>
+          <p class="tw-text-xl tw-font-medium tw-leading-loose">{{ ens }}</p>
           <p>{{ trimText(address || "") }}</p>
         </template>
         <template v-else>
-          <p class="tw-text-xl tw-font-medium">{{ trimText(address || "") }}</p>
+          <p class="tw-text-xl tw-font-medium tw-leading-loose">
+            {{ trimText(address || "") }}
+          </p>
         </template>
+
+        <div class="tw-space-x-2 tw-mt-4">
+          <v-tooltip text="Copy Address">
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                color="default"
+                variant="tonal"
+              >
+                <v-icon :icon="mdiContentCopy" />
+              </v-btn>
+            </template>
+          </v-tooltip>
+          <v-tooltip text="Open In Explorer">
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                color="default"
+                variant="tonal"
+              >
+                <v-icon :icon="mdiOpenInNew" />
+              </v-btn>
+            </template>
+          </v-tooltip>
+        </div>
+
+        <div class="tw-mt-8">{{ balancesStore.eth }} Ether</div>
       </div>
     </v-card>
   </v-dialog-base>
