@@ -31,12 +31,8 @@ const disconnect = async () => {
   await disconnectConnectedWallet();
 };
 
-watch([address, web3Provider], async ([address, web3Provider]) => {
-  if (address && web3Provider) {
-    balancesStore.getEthBalance(web3Provider, address);
-  } else {
-    dialog.value = false;
-  }
+watch(web3Provider, web3Provider => {
+  if (!web3Provider) dialog.value = false;
 });
 </script>
 
@@ -121,8 +117,8 @@ watch([address, web3Provider], async ([address, web3Provider]) => {
         </div>
 
         <div class="tw-mt-8">
-          <template v-if="balancesStore.raw.eth">
-            <v-tooltip :text="`Balance: ${balancesStore.str.eth}`">
+          <template v-if="balancesStore.ETH.raw">
+            <v-tooltip :text="`Balance: ${balancesStore.ETH.str}`">
               <template #activator="{ props }">
                 <p
                   class="tw-max-w-fit tw-mx-auto tw-underline tw-underline-offset-1"
@@ -130,7 +126,7 @@ watch([address, web3Provider], async ([address, web3Provider]) => {
                 >
                   <span class="tw-font-bold tw-mr-2 tw-inline-block">Ξ</span>
                   <span class="tw-inline-block">{{
-                    bigNumberToTrimmed(balancesStore.raw.eth)
+                    bigNumberToTrimmed(balancesStore.ETH.raw)
                   }}</span>
                 </p>
               </template>

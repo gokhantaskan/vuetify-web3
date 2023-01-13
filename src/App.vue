@@ -2,9 +2,12 @@
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useOnboard } from "@web3-onboard/vue";
 import walletConnectModule from "@web3-onboard/walletconnect";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 import ConnectWallet from "@/components/ConnectWallet/ConnectWallet.vue";
+
+import { useWeb3Provider } from "./composables/useWeb3Provider";
+import { useBalancesStore } from "./stores/balances";
 
 /**
  * Web3 Onboard
@@ -50,10 +53,17 @@ init({
  * ! `useOnboard` should come after `init` to initialize the hooks properly
  */
 const drawer = ref<boolean>(false);
-const { connectWallet, alreadyConnectedWallets } = useOnboard();
+const { connectWallet, connectedWallet, alreadyConnectedWallets } =
+  useOnboard();
+const { web3Provider } = useWeb3Provider();
+const { getEthBalance, resetEthBalance } = useBalancesStore();
+
+const address = computed(() => connectedWallet.value?.accounts[0].address);
 
 onMounted(async () => {
-  if (alreadyConnectedWallets.value.length) {
+  if (
+    JSON.parse(localStorage.getItem("alreadyConnectedWallets") || "[]").length
+  ) {
     await connectWallet({
       autoSelect: {
         label: alreadyConnectedWallets.value[0],
@@ -62,6 +72,19 @@ onMounted(async () => {
     });
   }
 });
+
+watch(
+  [address, web3Provider],
+  async ([address, web3Provider], [oldAddress]) => {
+    if (address && address !== oldAddress && web3Provider) {
+      getEthBalance(web3Provider, address);
+    }
+
+    if (!web3Provider) {
+      resetEthBalance();
+    }
+  }
+);
 </script>
 
 <template>

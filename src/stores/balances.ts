@@ -3,24 +3,21 @@ import type { Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
 import { defineStore } from "pinia";
 
-import { bigNumberToTrimmed } from "@/utils/format";
-
-export interface IBalancesStore {
-  str: {
-    [symbol: string]: string | null;
-  };
-  raw: {
-    [symbol: string]: BigNumber | null;
-  };
+export type BalanceRaw = BigNumber | null;
+export type BalanceStr = string | null;
+export interface IBalance {
+  raw: BalanceRaw;
+  str: BalanceStr;
+}
+export interface IBalances {
+  [key: string]: IBalance;
 }
 
 export const useBalancesStore = defineStore("balances", {
-  state: (): IBalancesStore => ({
-    str: {
-      eth: null,
-    },
-    raw: {
-      eth: null,
+  state: (): IBalances => ({
+    ETH: {
+      raw: null,
+      str: null,
     },
   }),
   actions: {
@@ -30,18 +27,18 @@ export const useBalancesStore = defineStore("balances", {
       console.log("Fetching ETH balance...");
 
       try {
-        this.raw.eth = await provider.getBalance(address);
-        this.str.eth = formatEther(this.raw.eth);
+        this.ETH.raw = await provider.getBalance(address);
+        this.ETH.str = formatEther(this.ETH.raw);
       } catch (e: any) {
         this.resetEthBalance();
         throw new Error("Error getting ETH balance: " + e);
       }
 
-      console.log("ETH balance: ", bigNumberToTrimmed(this.raw.eth));
+      console.log("ETH balance: ", this.ETH);
     },
     resetEthBalance() {
-      this.raw.eth = null;
-      this.str.eth = null;
+      this.ETH.raw = null;
+      this.ETH.str = null;
     },
   },
 });
