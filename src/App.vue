@@ -2,10 +2,14 @@
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useOnboard } from "@web3-onboard/vue";
 import walletConnectModule from "@web3-onboard/walletconnect";
-import { onMounted, ref, watchEffect } from "vue";
+import { storeToRefs } from "pinia";
+import { onMounted, ref, unref, watch } from "vue";
 
 import ConnectWallet from "@/components/ConnectWallet/ConnectWallet.vue";
-import { useWeb3Provider } from "@/composables/useWeb3Provider";
+
+import { useWeb3Provider } from "./composables/useWeb3Provider";
+import { useAppStore } from "./stores/app";
+import { useBalancesStore } from "./stores/balances";
 
 /**
  * Web3 Onboard
@@ -50,13 +54,18 @@ init({
  * State
  * ! `useOnboard` should come after `init` to initialize the hooks properly
  */
+const appStore = useAppStore();
+const { address, chainId } = storeToRefs(appStore);
+const { web3Provider } = useWeb3Provider();
+const { getEthBalance, resetEthBalance } = useBalancesStore();
+const { connectWallet, alreadyConnectedWallets } = useOnboard();
+
 const drawer = ref<boolean>(false);
-const { jsonRPCProvider } = useWeb3Provider();
-const { connectWallet, alreadyConnectedWallets, connectedWallet } =
-  useOnboard();
 
 onMounted(async () => {
-  if (alreadyConnectedWallets.value.length) {
+  if (
+    JSON.parse(localStorage.getItem("alreadyConnectedWallets") || "[]").length
+  ) {
     await connectWallet({
       autoSelect: {
         label: alreadyConnectedWallets.value[0],
@@ -66,9 +75,16 @@ onMounted(async () => {
   }
 });
 
-watchEffect(() => {
-  console.log("wallet", connectedWallet.value);
-  console.log("jsonRPCProvider", jsonRPCProvider.value);
+watch([address, chainId], async ([address, chainId]) => {
+  const provider = unref(web3Provider);
+
+  if (typeof address === "string" && !isNaN(chainId) && provider) {
+    getEthBalance(provider, address);
+  }
+
+  if (!provider || isNaN(chainId)) {
+    resetEthBalance();
+  }
 });
 </script>
 

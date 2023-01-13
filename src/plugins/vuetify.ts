@@ -63,6 +63,9 @@ const vuetify = createVuetify({
       attach: "#app",
       zIndex: 90,
     },
+    VTooltip: {
+      location: "bottom",
+    },
   },
   icons: {
     defaultSet: "mdi",
