@@ -5,6 +5,7 @@ import { computed, ref, watch } from "vue";
 
 import { useWeb3Provider } from "@/composables/useWeb3Provider";
 import { useBalancesStore } from "@/stores/balances";
+import { bigNumberToTrimmed } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
 
 const {
@@ -119,7 +120,23 @@ watch([address, web3Provider], async ([address, web3Provider]) => {
           </v-tooltip>
         </div>
 
-        <div class="tw-mt-8">{{ balancesStore.eth }} Ether</div>
+        <div class="tw-mt-8">
+          <template v-if="balancesStore.raw.eth">
+            <v-tooltip :text="`Balance: ${balancesStore.str.eth}`">
+              <template #activator="{ props }">
+                <p
+                  class="tw-max-w-fit tw-mx-auto tw-underline tw-underline-offset-1"
+                  v-bind="props"
+                >
+                  <span class="tw-font-bold tw-mr-2 tw-inline-block">Ξ</span>
+                  <span class="tw-inline-block">{{
+                    bigNumberToTrimmed(balancesStore.raw.eth)
+                  }}</span>
+                </p>
+              </template>
+            </v-tooltip>
+          </template>
+        </div>
       </div>
     </v-card>
   </v-dialog-base>
