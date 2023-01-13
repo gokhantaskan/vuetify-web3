@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { ref } from "vue";
 
 import DialogCard from "@/components/DialogCard/DialogCard.vue";
 import BaseLayout from "@/layouts/BaseLayout.vue";
@@ -11,9 +11,7 @@ const msg = `
   Accusantium, facere sed.
 `;
 
-const state = reactive({
-  isDialogOpen: false,
-});
+const dialog = ref(false);
 </script>
 
 <template>
@@ -25,16 +23,16 @@ const state = reactive({
     <div
       class="tw-border tw-rounded tw-border-gray-400 tw-p-4 tw-space-x-2 w-fit"
     >
-      <v-btn @click="state.isDialogOpen = true">Dialog</v-btn>
+      <v-btn @click="() => (dialog = true)">Dialog</v-btn>
       <v-btn-base>Useless</v-btn-base>
     </div>
   </BaseLayout>
 
-  <v-dialog v-model="state.isDialogOpen">
+  <v-dialog v-model="dialog">
     <DialogCard
-      :visible="state.isDialogOpen"
+      :visible="dialog"
       title="Title can be really long like this one and it should be fit!"
-      @close="state.isDialogOpen = false"
+      @close="() => (dialog = false)"
     >
       <!-- <template #title>
         <div>Custom Title</div>
@@ -46,7 +44,7 @@ const state = reactive({
         {{ msg }}
       </p>
       <template #actions>
-        <v-btn @click="state.isDialogOpen = false">Button</v-btn>
+        <v-btn @click="() => (dialog = false)">Button</v-btn>
       </template>
     </DialogCard>
   </v-dialog>

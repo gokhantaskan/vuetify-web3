@@ -98,6 +98,8 @@ watch(web3Provider, web3Provider => {
                 v-bind="props"
                 color="default"
                 variant="tonal"
+                size="small"
+                icon
               >
                 <v-icon :icon="mdiContentCopy" />
               </v-btn>
@@ -109,6 +111,8 @@ watch(web3Provider, web3Provider => {
                 v-bind="props"
                 color="default"
                 variant="tonal"
+                size="small"
+                icon
               >
                 <v-icon :icon="mdiOpenInNew" />
               </v-btn>

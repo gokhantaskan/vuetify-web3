@@ -2,11 +2,13 @@
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useOnboard } from "@web3-onboard/vue";
 import walletConnectModule from "@web3-onboard/walletconnect";
-import { computed, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { onMounted, ref, unref, watch } from "vue";
 
 import ConnectWallet from "@/components/ConnectWallet/ConnectWallet.vue";
 
 import { useWeb3Provider } from "./composables/useWeb3Provider";
+import { useAppStore } from "./stores/app";
 import { useBalancesStore } from "./stores/balances";
 
 /**
@@ -52,13 +54,13 @@ init({
  * State
  * ! `useOnboard` should come after `init` to initialize the hooks properly
  */
-const drawer = ref<boolean>(false);
-const { connectWallet, connectedWallet, alreadyConnectedWallets } =
-  useOnboard();
+const appStore = useAppStore();
+const { address, chainId } = storeToRefs(appStore);
 const { web3Provider } = useWeb3Provider();
 const { getEthBalance, resetEthBalance } = useBalancesStore();
+const { connectWallet, alreadyConnectedWallets } = useOnboard();
 
-const address = computed(() => connectedWallet.value?.accounts[0].address);
+const drawer = ref<boolean>(false);
 
 onMounted(async () => {
   if (
@@ -73,18 +75,17 @@ onMounted(async () => {
   }
 });
 
-watch(
-  [address, web3Provider],
-  async ([address, web3Provider], [oldAddress]) => {
-    if (address && address !== oldAddress && web3Provider) {
-      getEthBalance(web3Provider, address);
-    }
+watch([address, chainId], async ([address, chainId]) => {
+  const provider = unref(web3Provider);
 
-    if (!web3Provider) {
-      resetEthBalance();
-    }
+  if (typeof address === "string" && !isNaN(chainId) && provider) {
+    getEthBalance(provider, address);
   }
-);
+
+  if (!provider || isNaN(chainId)) {
+    resetEthBalance();
+  }
+});
 </script>
 
 <template>
