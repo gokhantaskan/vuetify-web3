@@ -22,6 +22,7 @@ $body-font-family-root: "Saira", $font-family-root;
 
 html {
   font-family: $body-font-family-root;
+  overflow-y: hidden;
 }
 
 :is(h1, h2, h3, h4, h5, h6) {

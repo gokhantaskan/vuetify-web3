@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { mdiMessageBadgeOutline } from "@mdi/js";
 import { reactive } from "vue";
 
 import AppDialog from "@/components/AppDialog/AppDialog.vue";
@@ -21,11 +22,19 @@ const state = reactive({
     title="Overview"
     class="tw-space-y-4"
   >
+    <template #actions>
+      <v-btn
+        icon
+        @click="state.isDialogOpen = true"
+      >
+        <v-icon :icon="mdiMessageBadgeOutline"></v-icon>
+      </v-btn>
+    </template>
+
     <p v-text="msg"></p>
     <div
       class="tw-border tw-rounded tw-border-gray-400 tw-p-4 tw-space-x-2 w-fit"
     >
-      <v-btn @click="state.isDialogOpen = true">Dialog</v-btn>
       <v-btn-base>Useless</v-btn-base>
     </div>
   </BaseLayout>
