@@ -1,27 +1,19 @@
 import type { Contract } from "@ethersproject/contracts";
-import { Web3Provider } from "@ethersproject/providers";
-import { useOnboard } from "@web3-onboard/vue";
+import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
+import { useAppStore } from "@/stores/app";
 import { getContract } from "@/utils/contract";
-import { hexToNumber } from "@/utils/format";
+
+import { useWeb3Provider } from "./useWeb3Provider";
 
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
-  const { connectedChain, connectedWallet } = useOnboard();
-
-  const chainId = computed(() => connectedChain.value?.id);
-  const account = computed(() => connectedWallet.value?.accounts[0].address);
-  const provider = computed(() => connectedWallet.value?.provider);
-  const library = computed(() => {
-    if (provider.value) {
-      return new Web3Provider(provider.value);
-    }
-    return null;
-  });
+  const { address: account, chainId } = storeToRefs(useAppStore());
+  const { web3Provider: library } = useWeb3Provider();
 
   return computed(() => {
     if (!addressOrAddressMap || !ABI || !library.value || !chainId.value)
@@ -30,7 +22,7 @@ export function useContract<T extends Contract = Contract>(
     let address: string | undefined;
 
     if (typeof addressOrAddressMap === "string") address = addressOrAddressMap;
-    else address = addressOrAddressMap[hexToNumber(chainId.value)];
+    else address = addressOrAddressMap[chainId.value];
 
     if (!address) return null;
 
