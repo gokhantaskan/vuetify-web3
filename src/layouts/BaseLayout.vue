@@ -10,14 +10,14 @@ defineProps({
 
 <template>
   <div class="tw-container">
-    <header class="tw-flex tw-items-center tw-justify-between tw-gap-4">
+    <header class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-py-8">
       <!-- Title -->
       <div class="tw-flex-1">
         <template v-if="$slots.title">
           <slot name="title" />
         </template>
         <template v-else>
-          <h1 class="tw-text-3xl md:tw-text-4xl">
+          <h1 class="tw-text-3xl md:tw-text-5xl">
             {{ title }}
           </h1>
         </template>

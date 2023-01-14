@@ -46,6 +46,7 @@ const vuetify = createVuetify({
       persistent: true,
       noClickAnimation: false,
       maxWidth: "720px",
+      zIndex: 100,
     },
     VDialogBase: {
       attach: "#app",
@@ -53,13 +54,17 @@ const vuetify = createVuetify({
       width: "75%",
       maxWidth: "480px",
       maxHeight: "75vh",
+      zIndex: 100,
       VCard: {
         elevation: 2,
       },
     },
     VOverlay: {
       attach: "#app",
-      zIndex: 100,
+      zIndex: 90,
+    },
+    VTooltip: {
+      location: "bottom",
     },
   },
   icons: {

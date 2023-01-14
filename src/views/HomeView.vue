@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { mdiMessageBadgeOutline } from "@mdi/js";
-import { reactive } from "vue";
+import { ref } from "vue";
 
-import AppDialog from "@/components/AppDialog/AppDialog.vue";
+import DialogCard from "@/components/DialogCard/DialogCard.vue";
 import BaseLayout from "@/layouts/BaseLayout.vue";
 
 const msg = `
@@ -12,9 +12,7 @@ const msg = `
   Accusantium, facere sed.
 `;
 
-const state = reactive({
-  isDialogOpen: false,
-});
+const dialog = ref(false);
 </script>
 
 <template>
@@ -25,7 +23,7 @@ const state = reactive({
     <template #actions>
       <v-btn
         icon
-        @click="state.isDialogOpen = true"
+        @click="() => (dialog = true)"
       >
         <v-icon :icon="mdiMessageBadgeOutline"></v-icon>
       </v-btn>
@@ -39,24 +37,24 @@ const state = reactive({
     </div>
   </BaseLayout>
 
-  <AppDialog
-    :visible="state.isDialogOpen"
-    title="Title can be really long like this one and it should be fit"
-    @close="state.isDialogOpen = false"
-  >
-    <p
-      v-for="i in 10"
-      :key="i"
+  <v-dialog v-model="dialog">
+    <DialogCard
+      :visible="dialog"
+      title="Title can be really long like this one and it should be fit!"
+      @close="() => (dialog = false)"
     >
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint, quis?
-      Exercitationem quod aspernatur perferendis tempora molestiae voluptatum
-      doloribus commodi iste aliquid, esse repellendus eaque cum numquam,
-      praesentium odit, dolor at molestias eius voluptatibus. Unde aliquid sed
-      vero iste repellendus a officiis, repudiandae natus itaque fugiat
-      doloribus velit voluptatum illo. Nisi?
-    </p>
-    <template #actions>
-      <v-btn @click="state.isDialogOpen = false">Button</v-btn>
-    </template>
-  </AppDialog>
+      <!-- <template #title>
+        <div>Custom Title</div>
+      </template> -->
+      <p
+        v-for="i in 10"
+        :key="i"
+      >
+        {{ msg }}
+      </p>
+      <template #actions>
+        <v-btn @click="() => (dialog = false)">Button</v-btn>
+      </template>
+    </DialogCard>
+  </v-dialog>
 </template>
