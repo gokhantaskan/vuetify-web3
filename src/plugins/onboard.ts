@@ -16,6 +16,8 @@ const supportedChains = Object.keys(networks).map(network => ({
     SUPPORTED_NETWORKS[network as unknown as number].blockExplorerUrls[0],
 }));
 
+console.log(supportedChains);
+
 const injected = injectedModule();
 const walletConnect = walletConnectModule();
 

@@ -1,7 +1,7 @@
 import colors from "tailwindcss/colors";
 import { type ThemeDefinition, createVuetify } from "vuetify";
 import { md2 } from "vuetify/blueprints";
-import { VBtn, VDialog } from "vuetify/components";
+import { VBtn, VDialog, VOverlay } from "vuetify/components";
 import { aliases, mdi } from "vuetify/iconsets/mdi-svg";
 
 const twTheme: ThemeDefinition = {
@@ -15,7 +15,7 @@ const twTheme: ThemeDefinition = {
     info: colors.violet["500"],
     success: colors.emerald["500"],
     warning: colors.amber["500"],
-    danger: colors.rose["500"],
+    danger: colors.red["500"],
   },
 };
 
@@ -30,6 +30,7 @@ const vuetify = createVuetify({
   aliases: {
     VBtnBase: VBtn,
     VDialogBase: VDialog,
+    VOverlayBase: VOverlay,
   },
   defaults: {
     VBtn: {
@@ -62,6 +63,18 @@ const vuetify = createVuetify({
     VOverlay: {
       attach: "#app",
       zIndex: 90,
+    },
+    VOverlayBase: {
+      zIndex: 90,
+    },
+    VSnackbar: {
+      attach: "#app",
+      timeout: 7000,
+      elevation: 2,
+      VBtn: {
+        color: "default",
+        variant: "flat",
+      },
     },
     VTooltip: {
       location: "bottom",

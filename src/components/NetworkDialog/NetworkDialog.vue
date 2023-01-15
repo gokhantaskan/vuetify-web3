@@ -1,34 +1,47 @@
 <script setup lang="ts">
-import { useOnboard } from "@web3-onboard/vue";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
+import { useWeb3Provider } from "@/composables/useWeb3Provider";
 import { NETWORK_ICON, SUPPORTED_NETWORKS } from "@/constants/blockchain";
 import { useAppStore } from "@/stores/app";
 import { hexToNumber, numberToHex } from "@/utils/format";
+import { switchToNetwork } from "@/utils/network";
 
-const { setChain, alreadyConnectedWallets } = useOnboard();
+type Network = (typeof SUPPORTED_NETWORKS)[keyof typeof SUPPORTED_NETWORKS];
+
+const { web3Provider } = useWeb3Provider();
 const { chainId } = storeToRefs(useAppStore());
 
 const dialog = ref(false);
 const overlay = ref(false);
+const snackbar = ref(false);
+const errorMsg = ref("");
 
-const switchChain = async (
-  network: (typeof SUPPORTED_NETWORKS)[keyof typeof SUPPORTED_NETWORKS]
-) => {
-  console.log(network.chainId);
-  console.log(numberToHex(chainId.value));
+const isCurrentNetwork = (network: Network) => {
+  return (
+    network.chainId.toLowerCase() === numberToHex(chainId.value).toLowerCase()
+  );
+};
+
+const switchChain = async (network: Network) => {
   overlay.value = true;
 
   try {
-    await setChain({
-      chainId: network.chainId,
-      wallet: alreadyConnectedWallets.value[0],
-    });
+    const provider = web3Provider.value?.provider;
+
+    if (provider)
+      await switchToNetwork({
+        provider,
+        chainId: hexToNumber(network.chainId),
+      });
 
     dialog.value = false;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Switch chain error: ", error);
+
+    snackbar.value = true;
+    errorMsg.value = error.message;
   } finally {
     overlay.value = false;
   }
@@ -53,7 +66,10 @@ const switchChain = async (
     v-model="dialog"
     max-width="640px"
   >
-    <v-card :elevation="2">
+    <v-card
+      :elevation="2"
+      class="tw-relative"
+    >
       <div class="tw-p-4">
         <h2 class="tw-mb-4">Select Network</h2>
 
@@ -63,18 +79,20 @@ const switchChain = async (
             :key="network"
           >
             <button
+              v-ripple
               :class="[
                 'tw-transition-colors',
-                'tw-p-2 tw-rounded tw-cursor-pointer',
+                'tw-p-2 tw-rounded tw-border',
                 'tw-flex tw-items-center tw-justify-start tw-gap-2',
-                network.chainId === numberToHex(chainId)
+                isCurrentNetwork(network)
                   ? 'tw-border-sky-500 tw-bg-sky-500/10'
                   : [
+                      'tw-cursor-pointer',
                       'tw-border tw-border-slate-600',
-                      'hover:tw-bg-slate-700 focus:tw-bg-slate-700',
+                      'hover:tw-bg-slate-600/10 focus:tw-bg-slate-600/10',
                     ],
               ]"
-              :disabled="network.chainId === numberToHex(chainId)"
+              :disabled="isCurrentNetwork(network)"
               @click="switchChain(network)"
             >
               <div
@@ -85,29 +103,31 @@ const switchChain = async (
                   :alt="network.chainName"
                   height="48"
                 />
-                <span>{{ network.chainName }}</span>
+                <p>
+                  <span class="tw-inline-block">{{ network.chainName }}</span>
+                </p>
               </div>
-              <template v-if="network.chainId === numberToHex(chainId)">
+              <template v-if="isCurrentNetwork(network)">
                 <div
-                  class="tw-bg-green-500 tw-w-[16px] tw-h-[16px] tw-rounded-full"
+                  class="tw-bg-green-500 tw-w-[12px] tw-h-[12px] tw-rounded-full"
                 ></div>
               </template>
             </button>
           </template>
         </div>
       </div>
-
-      <v-overlay
-        v-model="overlay"
-        contained
-        class="tw-items-center tw-justify-center"
-      >
-        <v-progress-circular
-          color="primary"
-          indeterminate
-          size="48"
-        ></v-progress-circular>
-      </v-overlay>
     </v-card>
   </v-dialog-base>
+
+  <v-snackbar
+    v-model="snackbar"
+    color="danger"
+    :timeout="1231323"
+  >
+    {{ errorMsg }}
+
+    <template #actions>
+      <v-btn @click="() => (snackbar = false)"> Close </v-btn>
+    </template>
+  </v-snackbar>
 </template>
