@@ -1,22 +1,35 @@
 <script setup lang="ts">
+import { mdiPulse } from "@mdi/js";
+import { useOnboard } from "@web3-onboard/vue";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
+import DialogCard from "@/components/DialogCard/DialogCard.vue";
 import { useWeb3Provider } from "@/composables/useWeb3Provider";
 import { NETWORK_ICON, SUPPORTED_NETWORKS } from "@/constants/blockchain";
+// import { switchToNetwork } from "@/utils/network";
+import { supportedNetworks } from "@/plugins/onboard";
 import { useAppStore } from "@/stores/app";
 import { hexToNumber, numberToHex } from "@/utils/format";
-import { switchToNetwork } from "@/utils/network";
 
 type Network = (typeof SUPPORTED_NETWORKS)[keyof typeof SUPPORTED_NETWORKS];
 
-const { web3Provider } = useWeb3Provider();
+const { setChain, settingChain, alreadyConnectedWallets } = useOnboard();
+// const { web3Provider } = useWeb3Provider();
 const { chainId } = storeToRefs(useAppStore());
 
 const dialog = ref(false);
 const overlay = ref(false);
 const snackbar = ref(false);
 const errorMsg = ref("");
+
+const networkIds = Object.values(SUPPORTED_NETWORKS).map(network =>
+  network.chainId.toLowerCase()
+);
+
+const isNetworkSupported = computed(() =>
+  networkIds.includes(numberToHex(chainId.value).toLowerCase())
+);
 
 const isCurrentNetwork = (network: Network) => {
   return (
@@ -28,13 +41,17 @@ const switchChain = async (network: Network) => {
   overlay.value = true;
 
   try {
-    const provider = web3Provider.value?.provider;
+    await setChain({
+      chainId: network.chainId,
+      wallet: alreadyConnectedWallets.value[0],
+    });
+    // const provider = web3Provider.value?.provider;
 
-    if (provider)
-      await switchToNetwork({
-        provider,
-        chainId: hexToNumber(network.chainId),
-      });
+    // if (provider)
+    //   await switchToNetwork({
+    //     provider,
+    //     chainId: hexToNumber(network.chainId),
+    //   });
 
     dialog.value = false;
   } catch (error: any) {
@@ -52,71 +69,77 @@ const switchChain = async (network: Network) => {
   <v-btn
     icon
     size="small"
-    color="default"
+    :color="isNetworkSupported ? 'default' : 'danger'"
+    :variant="isNetworkSupported ? undefined : 'flat'"
     @click="() => (dialog = true)"
   >
-    <img
-      :src="NETWORK_ICON[chainId]"
-      alt=""
-      height="28"
-    />
+    <template v-if="isNetworkSupported">
+      <img
+        :src="NETWORK_ICON[chainId]"
+        alt=""
+        height="28"
+      />
+    </template>
+    <template v-else>
+      <v-icon :icon="mdiPulse"></v-icon>
+    </template>
   </v-btn>
 
   <v-dialog-base
     v-model="dialog"
     max-width="640px"
   >
-    <v-card
-      :elevation="2"
+    <DialogCard
+      title="Select Network"
       class="tw-relative"
+      @close="() => (dialog = false)"
     >
-      <div class="tw-p-4">
-        <h2 class="tw-mb-4">Select Network</h2>
-
-        <div class="tw-grid tw-grid-col-1 md:tw-grid-cols-2 tw-gap-4">
-          <template
-            v-for="network in SUPPORTED_NETWORKS"
-            :key="network"
+      <div class="tw-grid tw-grid-col-1 md:tw-grid-cols-2 tw-gap-4">
+        <template v-if="settingChain">
+          <div class="tw-col-span-2">Switching chain...</div>
+        </template>
+        <template
+          v-for="network in supportedNetworks"
+          :key="network"
+        >
+          <button
+            v-ripple
+            :class="[
+              'tw-transition-colors',
+              'tw-p-2 tw-rounded tw-border',
+              'tw-flex tw-items-center tw-justify-start tw-gap-2',
+              isCurrentNetwork(network)
+                ? 'tw-border-sky-500 tw-bg-sky-500/10'
+                : [
+                    'tw-cursor-pointer',
+                    'tw-border tw-border-slate-600',
+                    'hover:tw-bg-slate-600/10 focus:tw-bg-slate-600/10',
+                  ],
+            ]"
+            :disabled="isCurrentNetwork(network)"
+            @click="switchChain(network)"
           >
-            <button
-              v-ripple
-              :class="[
-                'tw-transition-colors',
-                'tw-p-2 tw-rounded tw-border',
-                'tw-flex tw-items-center tw-justify-start tw-gap-2',
-                isCurrentNetwork(network)
-                  ? 'tw-border-sky-500 tw-bg-sky-500/10'
-                  : [
-                      'tw-cursor-pointer',
-                      'tw-border tw-border-slate-600',
-                      'hover:tw-bg-slate-600/10 focus:tw-bg-slate-600/10',
-                    ],
-              ]"
-              :disabled="isCurrentNetwork(network)"
-              @click="switchChain(network)"
+            <div
+              class="tw-flex tw-items-center tw-justify-start tw-gap-2 tw-flex-1"
             >
+              <img
+                :src="NETWORK_ICON[hexToNumber(network.chainId)]"
+                :alt="network.chainName"
+                height="48"
+              />
+              <p>
+                <span class="tw-inline-block">{{ network.chainName }}</span>
+              </p>
+            </div>
+            <template v-if="isCurrentNetwork(network)">
               <div
-                class="tw-flex tw-items-center tw-justify-start tw-gap-2 tw-flex-1"
-              >
-                <img
-                  :src="NETWORK_ICON[hexToNumber(network.chainId)]"
-                  :alt="network.chainName"
-                  height="48"
-                />
-                <p>
-                  <span class="tw-inline-block">{{ network.chainName }}</span>
-                </p>
-              </div>
-              <template v-if="isCurrentNetwork(network)">
-                <div
-                  class="tw-bg-green-500 tw-w-[12px] tw-h-[12px] tw-rounded-full"
-                ></div>
-              </template>
-            </button>
-          </template>
-        </div>
+                class="tw-bg-green-500 tw-w-[12px] tw-h-[12px] tw-mr-[12px] tw-rounded-full"
+              ></div>
+            </template>
+          </button>
+        </template>
       </div>
-    </v-card>
+    </DialogCard>
   </v-dialog-base>
 
   <v-snackbar

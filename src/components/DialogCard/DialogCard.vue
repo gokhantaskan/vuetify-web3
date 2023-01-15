@@ -3,12 +3,10 @@ import { mdiClose } from "@mdi/js";
 
 export interface IDialogProps {
   title?: string;
-  wrapperClass?: string | string[] | Record<string, boolean>;
 }
 
 withDefaults(defineProps<IDialogProps>(), {
   title: "Dialog Title",
-  wrapperClass: undefined,
 });
 
 const emit = defineEmits<{
@@ -20,17 +18,8 @@ const handleClose = () => {
 };
 </script>
 
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-};
-</script>
-
 <template>
-  <v-card
-    elevation="2"
-    :class="wrapperClass"
-  >
+  <v-card elevation="2">
     <template v-if="title">
       <!-- Dialog Title -->
       <div
@@ -38,7 +27,7 @@ export default {
       >
         <div class="tw-flex-1">
           <slot name="title">
-            <h2>{{ title }}</h2>
+            <h2 class="tw-text-xl md:tw-text-2xl">{{ title }}</h2>
           </slot>
         </div>
         <v-btn

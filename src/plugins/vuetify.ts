@@ -53,7 +53,6 @@ const vuetify = createVuetify({
       attach: "#app",
       persistent: false,
       width: "75%",
-      maxWidth: "480px",
       maxHeight: "75vh",
       zIndex: 100,
       VCard: {

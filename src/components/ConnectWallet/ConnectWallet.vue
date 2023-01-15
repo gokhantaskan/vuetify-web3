@@ -75,7 +75,10 @@ watch(web3Provider, web3Provider => {
     </v-btn-group>
   </template>
   <!-- Dialog -->
-  <v-dialog-base v-model="dialog">
+  <v-dialog-base
+    v-model="dialog"
+    max-width="480px"
+  >
     <v-card
       :elevation="2"
       class="tw-p-4 tw-text-center"

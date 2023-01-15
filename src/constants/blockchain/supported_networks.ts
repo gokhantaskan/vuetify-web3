@@ -70,7 +70,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://polygonscan.com"],
   },
   [ChainId.AVALANCHE]: {
-    chainId: "0xA86A",
+    chainId: "0xa86a",
     chainName: "Avalanche C-Chain",
     nativeCurrency: {
       name: "Avalanche Token",
@@ -81,7 +81,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://snowtrace.io"],
   },
   [ChainId.ARBITRUM]: {
-    chainId: "0xA4B1",
+    chainId: "0xa4b1",
     chainName: "Arbitrum",
     nativeCurrency: {
       name: "Ethereum",
