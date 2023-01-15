@@ -33,6 +33,3 @@ export function bigNumberToTrimmed(
       .replace(/0+$/, "");
   }
 }
-
-window.numberToHex = numberToHex;
-window.hexToNumber = hexToNumber;
