@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { mdiContentCopy, mdiLogin, mdiLogout, mdiOpenInNew } from "@mdi/js";
+import { mdiContentCopy, mdiLogin, mdiOpenInNew, mdiPower } from "@mdi/js";
+import { useClipboard } from "@vueuse/core";
 import { useOnboard } from "@web3-onboard/vue";
-import { computed, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { ref, watch } from "vue";
 
 import { useWeb3Provider } from "@/composables/useWeb3Provider";
+import { useAppStore } from "@/stores/app";
 import { useBalancesStore } from "@/stores/balances";
 import { bigNumberToTrimmed } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
@@ -18,10 +21,10 @@ const {
 
 const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
+const { address, ens } = storeToRefs(useAppStore());
 
-const ens = computed(() => connectedWallet.value?.accounts[0].ens?.name);
-const address = computed(() => connectedWallet.value?.accounts[0].address);
 const dialog = ref(false);
+const { copy, copied, isSupported } = useClipboard({ source: address.value });
 
 const connect = async () => {
   if (!alreadyConnectedWallets.value.length) await connectWallet();
@@ -52,27 +55,13 @@ watch(web3Provider, web3Provider => {
     </v-tooltip>
   </template>
   <template v-else>
-    <v-btn-group density="compact">
-      <v-btn
-        variant="tonal"
-        color="white"
-        @click="() => (dialog = true)"
-      >
-        {{ ens || trimText(address || "") }}
-      </v-btn>
-      <v-tooltip text="Disconnect">
-        <template #activator="{ props }">
-          <v-btn
-            v-bind="props"
-            color="danger"
-            variant="tonal"
-            @click="disconnect"
-          >
-            <v-icon :icon="mdiLogout"></v-icon>
-          </v-btn>
-        </template>
-      </v-tooltip>
-    </v-btn-group>
+    <v-btn
+      variant="tonal"
+      color="white"
+      @click="() => (dialog = true)"
+    >
+      {{ ens || trimText(address) }}
+    </v-btn>
   </template>
   <!-- Dialog -->
   <v-dialog-base
@@ -86,28 +75,31 @@ watch(web3Provider, web3Provider => {
       <div>
         <template v-if="ens">
           <p class="tw-text-xl tw-font-medium tw-leading-loose">{{ ens }}</p>
-          <p>{{ trimText(address || "") }}</p>
+          <p>{{ trimText(address) }}</p>
         </template>
         <template v-else>
           <p class="tw-text-xl tw-font-medium tw-leading-loose">
-            {{ trimText(address || "") }}
+            {{ trimText(address) }}
           </p>
         </template>
 
         <div class="tw-space-x-2 tw-mt-4">
-          <v-tooltip text="Copy Address">
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                color="default"
-                variant="tonal"
-                size="small"
-                icon
-              >
-                <v-icon :icon="mdiContentCopy" />
-              </v-btn>
-            </template>
-          </v-tooltip>
+          <template v-if="isSupported">
+            <v-tooltip :text="copied ? 'Copied!' : 'Copy Address'">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="default"
+                  variant="tonal"
+                  size="small"
+                  icon
+                  @click="() => copy()"
+                >
+                  <v-icon :icon="mdiContentCopy" />
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
           <v-tooltip text="Open In Explorer">
             <template #activator="{ props }">
               <v-btn
@@ -118,6 +110,20 @@ watch(web3Provider, web3Provider => {
                 icon
               >
                 <v-icon :icon="mdiOpenInNew" />
+              </v-btn>
+            </template>
+          </v-tooltip>
+          <v-tooltip text="Disconnect">
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                color="default"
+                variant="tonal"
+                size="small"
+                icon
+                @click="disconnect"
+              >
+                <v-icon :icon="mdiPower" />
               </v-btn>
             </template>
           </v-tooltip>

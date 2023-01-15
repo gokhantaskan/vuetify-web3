@@ -5,7 +5,6 @@ import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 
 import DialogCard from "@/components/DialogCard/DialogCard.vue";
-import { useWeb3Provider } from "@/composables/useWeb3Provider";
 import { NETWORK_ICON, SUPPORTED_NETWORKS } from "@/constants/blockchain";
 // import { switchToNetwork } from "@/utils/network";
 import { supportedNetworks } from "@/plugins/onboard";
@@ -67,6 +66,7 @@ const switchChain = async (network: Network) => {
 
 <template>
   <v-btn
+    v-if="alreadyConnectedWallets[0]"
     icon
     size="small"
     :color="isNetworkSupported ? 'default' : 'danger'"
@@ -95,9 +95,17 @@ const switchChain = async (network: Network) => {
       @close="() => (dialog = false)"
     >
       <div class="tw-grid tw-grid-col-1 md:tw-grid-cols-2 tw-gap-4">
-        <template v-if="settingChain">
-          <div class="tw-col-span-2">Switching chain...</div>
-        </template>
+        <div
+          v-if="settingChain"
+          class="tw-col-span-1 md:tw-col-span-2"
+        >
+          <v-alert
+            color="success"
+            variant="tonal"
+          >
+            Switching...
+          </v-alert>
+        </div>
         <template
           v-for="network in supportedNetworks"
           :key="network"

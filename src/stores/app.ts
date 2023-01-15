@@ -8,8 +8,12 @@ export const useAppStore = defineStore("app", () => {
   const { connectedWallet, connectedChain } = useOnboard();
 
   const provider = computed(() => connectedWallet.value?.provider);
-  const ens = computed(() => connectedWallet.value?.accounts[0].ens?.name);
-  const address = computed(() => connectedWallet.value?.accounts[0].address);
+  const ens = computed(
+    () => connectedWallet.value?.accounts[0].ens?.name || ""
+  );
+  const address = computed(
+    () => connectedWallet.value?.accounts[0].address || ""
+  );
   const chainId = computed(() => hexToNumber(connectedChain.value?.id || "")); // ! can be NaN
   const renderKey = ref(0);
 
