@@ -2,7 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 
 export function numberToHex(hex: number): string {
-  return hex.toString(16);
+  return `0x${hex.toString(16)}`;
 }
 
 export function hexToNumber(hex: string): number {

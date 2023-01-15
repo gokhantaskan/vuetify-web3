@@ -6,6 +6,7 @@
   --accent-color: #929bed; 
   --accent-color-hover: #eff1fc; 
   --secondary-text-color: #707481; 
+  --modal-z-index: 100;
   --onboard-connect-sidebar-background: var(--accent-background);
   --onboard-close-button-background: var(--accent-background);
   --onboard-connect-sidebar-color: var(--text-color);
@@ -19,4 +20,5 @@
   --onboard-wallet-button-background-hover: var(--accent-color-hover);
   --onboard-wallet-button-border-color: var(--border-color);
   --onboard-wallet-app-icon-border-color: var(--border-color);
+  --onboard-modal-z-index: var(--modal-z-index);
 }
