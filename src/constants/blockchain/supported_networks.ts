@@ -38,7 +38,7 @@ export const SUPPORTED_NETWORKS: Record<
   },
   [ChainId.FANTOM]: {
     chainId: "0xfa",
-    chainName: "Fantom",
+    chainName: "Fantom Opera",
     nativeCurrency: {
       name: "Fantom",
       symbol: "FTM",
@@ -60,7 +60,7 @@ export const SUPPORTED_NETWORKS: Record<
   },
   [ChainId.POLYGON]: {
     chainId: "0x89",
-    chainName: "Polygon",
+    chainName: "Polygon Mainnet",
     nativeCurrency: {
       name: "Matic",
       symbol: "MATIC",
@@ -82,7 +82,7 @@ export const SUPPORTED_NETWORKS: Record<
   },
   [ChainId.ARBITRUM]: {
     chainId: "0xa4b1",
-    chainName: "Arbitrum",
+    chainName: "Arbitrum One",
     nativeCurrency: {
       name: "Ethereum",
       symbol: "ETH",

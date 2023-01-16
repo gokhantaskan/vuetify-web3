@@ -67,6 +67,19 @@ watch([address, chainId], async ([address, chainId]) => {
       temporary
       :style="{ zIndex: 79 }"
     >
+      <v-list
+        density="compact"
+        nav
+      >
+        <v-list-item
+          title="Home"
+          :to="{ name: 'Home' }"
+        ></v-list-item>
+        <v-list-item
+          title="About"
+          :to="{ name: 'About' }"
+        ></v-list-item>
+      </v-list>
     </v-navigation-drawer>
     <v-main :scrollable="true">
       <router-view />
