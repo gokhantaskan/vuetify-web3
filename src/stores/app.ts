@@ -9,9 +9,6 @@ export const useAppStore = defineStore("app", () => {
   const { connectedWallet, connectedChain } = useOnboard();
 
   const provider = computed(() => connectedWallet.value?.provider);
-  const ens = computed(
-    () => connectedWallet.value?.accounts[0].ens?.name || ""
-  );
   const address = computed(
     () => connectedWallet.value?.accounts[0].address || ""
   );
@@ -28,7 +25,6 @@ export const useAppStore = defineStore("app", () => {
   return {
     provider,
     chainId,
-    ens,
     address,
     renderKey,
     renderApp,

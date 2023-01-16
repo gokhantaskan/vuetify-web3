@@ -22,10 +22,11 @@ const {
 
 const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
-const { address, ens, chainId } = storeToRefs(useAppStore());
+const { address, chainId } = storeToRefs(useAppStore());
 const { copy, copied, isSupported } = useClipboard({ source: address });
 
 const dialog = ref(false);
+const ens = ref<string | null | undefined>("");
 const currentChain = computed(() =>
   Object.values(SUPPORTED_NETWORKS).find(
     n => n.chainId === numberToHex(chainId.value)
@@ -40,8 +41,17 @@ const disconnect = async () => {
   await disconnectConnectedWallet();
 };
 
-watch(web3Provider, web3Provider => {
-  if (!web3Provider) dialog.value = false;
+watch(web3Provider, async web3Provider => {
+  if (!web3Provider) {
+    dialog.value = false;
+  } else {
+    try {
+      ens.value = await web3Provider?.lookupAddress(address.value);
+    } catch (e: any) {
+      ens.value = undefined;
+      console.error("ENS resolve error: ", e);
+    }
+  }
 });
 </script>
 
