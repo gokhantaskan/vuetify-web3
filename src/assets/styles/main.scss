@@ -17,6 +17,10 @@ $body-font-family-root: "Saira", $font-family-root;
   text-transform: none !important;
 }
 
+.v-navigation-drawer__scrim {
+  z-index: 78 !important;
+}
+
 *,
 *::after,
 *::before {

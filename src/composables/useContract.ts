@@ -2,13 +2,15 @@ import type { Contract } from "@ethersproject/contracts";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
+import ERC20_ABI from "@/constants/abis/ERC20.json";
 import { useAppStore } from "@/stores/app";
+import type { AddressMap } from "@/types/address_map";
 import { getContract } from "@/utils/contract";
 
 import { useWeb3Provider } from "./useWeb3Provider";
 
 export function useContract<T extends Contract = Contract>(
-  addressOrAddressMap: string | { [chainId: number]: string } | undefined,
+  addressOrAddressMap: string | AddressMap | undefined,
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
@@ -38,4 +40,11 @@ export function useContract<T extends Contract = Contract>(
       return null;
     }
   }).value as T;
+}
+
+export function useTokenContract(
+  address: string,
+  withSignerIfPossible?: boolean
+): Contract | null {
+  return useContract(address, ERC20_ABI, withSignerIfPossible);
 }

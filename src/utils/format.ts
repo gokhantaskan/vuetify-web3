@@ -28,8 +28,14 @@ export function bigNumberToTrimmed(
     return "< 0.0001";
   } else {
     const [l, r] = formatUnits(balance.toString()).split(".");
-    return parseFloat(`${l}.${r?.slice(0, fixed) ?? 0}`)
-      .toString()
-      .replace(/0+$/, "");
+
+    return Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: fixed,
+    })
+      .format(
+        parseFloat(`${l}.${r?.slice(0, fixed + 1).replace(/0+$/, "") ?? 0}`)
+      )
+      .toString();
   }
 }

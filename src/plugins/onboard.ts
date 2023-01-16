@@ -4,19 +4,19 @@ import walletConnectModule from "@web3-onboard/walletconnect";
 
 import { SUPPORTED_NETWORKS } from "@/constants/blockchain/supported_networks";
 
-const networks = SUPPORTED_NETWORKS;
-delete networks[5];
+/**
+ * Remove test networks
+ */
+const supportedNetworks = { ...SUPPORTED_NETWORKS };
+delete supportedNetworks[5];
 
-const supportedChains = Object.keys(networks).map(network => ({
-  id: SUPPORTED_NETWORKS[network as unknown as number].chainId,
-  label: SUPPORTED_NETWORKS[network as unknown as number].chainName,
-  token: SUPPORTED_NETWORKS[network as unknown as number].nativeCurrency.symbol,
-  rpcUrl: SUPPORTED_NETWORKS[network as unknown as number].rpcUrls[0],
-  blockExplorerUrl:
-    SUPPORTED_NETWORKS[network as unknown as number].blockExplorerUrls[0],
+const supportedChains = Object.values(supportedNetworks).map(network => ({
+  id: network.chainId,
+  label: network.chainName,
+  token: network.nativeCurrency.symbol,
+  rpcUrl: network.rpcUrls[0],
+  blockExplorerUrl: network.blockExplorerUrls[0],
 }));
-
-console.log(supportedChains);
 
 const injected = injectedModule();
 const walletConnect = walletConnectModule();
@@ -38,3 +38,5 @@ init({
     icon: "<svg></svg>",
   },
 });
+
+export { supportedNetworks };

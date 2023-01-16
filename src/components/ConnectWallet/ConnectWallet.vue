@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { mdiContentCopy, mdiLogin, mdiLogout, mdiOpenInNew } from "@mdi/js";
+import { mdiContentCopy, mdiLogin, mdiOpenInNew, mdiPower } from "@mdi/js";
+import { useClipboard } from "@vueuse/core";
 import { useOnboard } from "@web3-onboard/vue";
+import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 
 import { useWeb3Provider } from "@/composables/useWeb3Provider";
+import { SUPPORTED_NETWORKS } from "@/constants/blockchain";
+import { useAppStore } from "@/stores/app";
 import { useBalancesStore } from "@/stores/balances";
-import { bigNumberToTrimmed } from "@/utils/format";
+import { bigNumberToTrimmed, numberToHex } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
 
 const {
@@ -18,10 +22,16 @@ const {
 
 const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
+const { address, chainId } = storeToRefs(useAppStore());
+const { copy, copied, isSupported } = useClipboard({ source: address });
 
-const ens = computed(() => connectedWallet.value?.accounts[0].ens?.name);
-const address = computed(() => connectedWallet.value?.accounts[0].address);
 const dialog = ref(false);
+const ens = ref<string | null | undefined>("");
+const currentChain = computed(() =>
+  Object.values(SUPPORTED_NETWORKS).find(
+    n => n.chainId === numberToHex(chainId.value)
+  )
+);
 
 const connect = async () => {
   if (!alreadyConnectedWallets.value.length) await connectWallet();
@@ -31,8 +41,17 @@ const disconnect = async () => {
   await disconnectConnectedWallet();
 };
 
-watch(web3Provider, web3Provider => {
-  if (!web3Provider) dialog.value = false;
+watch(web3Provider, async web3Provider => {
+  if (!web3Provider) {
+    dialog.value = false;
+  } else {
+    try {
+      ens.value = await web3Provider?.lookupAddress(address.value);
+    } catch (e: any) {
+      ens.value = undefined;
+      console.error("ENS resolve error: ", e);
+    }
+  }
 });
 </script>
 
@@ -52,30 +71,19 @@ watch(web3Provider, web3Provider => {
     </v-tooltip>
   </template>
   <template v-else>
-    <v-btn-group density="compact">
-      <v-btn
-        variant="tonal"
-        color="white"
-        @click="() => (dialog = true)"
-      >
-        {{ ens || trimText(address || "") }}
-      </v-btn>
-      <v-tooltip text="Disconnect">
-        <template #activator="{ props }">
-          <v-btn
-            v-bind="props"
-            color="danger"
-            variant="tonal"
-            @click="disconnect"
-          >
-            <v-icon :icon="mdiLogout"></v-icon>
-          </v-btn>
-        </template>
-      </v-tooltip>
-    </v-btn-group>
+    <v-btn
+      variant="tonal"
+      color="white"
+      @click="() => (dialog = true)"
+    >
+      {{ ens || trimText(address) }}
+    </v-btn>
   </template>
   <!-- Dialog -->
-  <v-dialog-base v-model="dialog">
+  <v-dialog-base
+    v-model="dialog"
+    max-width="480px"
+  >
     <v-card
       :elevation="2"
       class="tw-p-4 tw-text-center"
@@ -83,16 +91,49 @@ watch(web3Provider, web3Provider => {
       <div>
         <template v-if="ens">
           <p class="tw-text-xl tw-font-medium tw-leading-loose">{{ ens }}</p>
-          <p>{{ trimText(address || "") }}</p>
+          <p>{{ trimText(address) }}</p>
         </template>
         <template v-else>
           <p class="tw-text-xl tw-font-medium tw-leading-loose">
-            {{ trimText(address || "") }}
+            {{ trimText(address) }}
           </p>
         </template>
 
         <div class="tw-space-x-2 tw-mt-4">
-          <v-tooltip text="Copy Address">
+          <template v-if="isSupported">
+            <v-tooltip :text="copied ? 'Copied!' : 'Copy Address'">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="default"
+                  variant="tonal"
+                  size="small"
+                  icon
+                  @click="() => copy()"
+                >
+                  <v-icon :icon="mdiContentCopy" />
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
+          <template v-if="currentChain?.blockExplorerUrls[0]">
+            <v-tooltip text="Open In Explorer">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="default"
+                  variant="tonal"
+                  size="small"
+                  icon
+                  :href="`${currentChain?.blockExplorerUrls[0]}/address/${address}`"
+                  target="_blank"
+                >
+                  <v-icon :icon="mdiOpenInNew" />
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
+          <v-tooltip text="Disconnect">
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -100,21 +141,9 @@ watch(web3Provider, web3Provider => {
                 variant="tonal"
                 size="small"
                 icon
+                @click="disconnect"
               >
-                <v-icon :icon="mdiContentCopy" />
-              </v-btn>
-            </template>
-          </v-tooltip>
-          <v-tooltip text="Open In Explorer">
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                color="default"
-                variant="tonal"
-                size="small"
-                icon
-              >
-                <v-icon :icon="mdiOpenInNew" />
+                <v-icon :icon="mdiPower" />
               </v-btn>
             </template>
           </v-tooltip>
@@ -128,9 +157,14 @@ watch(web3Provider, web3Provider => {
                   class="tw-max-w-fit tw-mx-auto tw-underline tw-underline-offset-1"
                   v-bind="props"
                 >
-                  <span class="tw-font-bold tw-mr-2 tw-inline-block">Ξ</span>
                   <span class="tw-inline-block">{{
-                    bigNumberToTrimmed(balancesStore.ETH.raw)
+                    bigNumberToTrimmed(
+                      balancesStore.ETH.raw,
+                      currentChain?.nativeCurrency.decimals
+                    )
+                  }}</span>
+                  <span class="tw-font-bold tw-mr-2 tw-inline-block tw-ml-2">{{
+                    currentChain?.nativeCurrency.symbol
                   }}</span>
                 </p>
               </template>

@@ -1,5 +1,7 @@
 import { ChainId } from "@/types/enums/chain_ids";
 
+export const DEFAULT_NETWORK = ChainId.ETHEREUM;
+
 export const SUPPORTED_NETWORKS: Record<
   number,
   {
@@ -38,7 +40,7 @@ export const SUPPORTED_NETWORKS: Record<
   },
   [ChainId.FANTOM]: {
     chainId: "0xfa",
-    chainName: "Fantom",
+    chainName: "Fantom Opera",
     nativeCurrency: {
       name: "Fantom",
       symbol: "FTM",
@@ -60,7 +62,7 @@ export const SUPPORTED_NETWORKS: Record<
   },
   [ChainId.POLYGON]: {
     chainId: "0x89",
-    chainName: "Polygon",
+    chainName: "Polygon Mainnet",
     nativeCurrency: {
       name: "Matic",
       symbol: "MATIC",
@@ -70,7 +72,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://polygonscan.com"],
   },
   [ChainId.AVALANCHE]: {
-    chainId: "0xA86A",
+    chainId: "0xa86a",
     chainName: "Avalanche C-Chain",
     nativeCurrency: {
       name: "Avalanche Token",
@@ -81,8 +83,8 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://snowtrace.io"],
   },
   [ChainId.ARBITRUM]: {
-    chainId: "0xA4B1",
-    chainName: "Arbitrum",
+    chainId: "0xa4b1",
+    chainName: "Arbitrum One",
     nativeCurrency: {
       name: "Ethereum",
       symbol: "ETH",
