@@ -23,7 +23,7 @@ const {
 const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
 const { address, ens, chainId } = storeToRefs(useAppStore());
-const { copy, copied, isSupported } = useClipboard({ source: address.value });
+const { copy, copied, isSupported } = useClipboard({ source: address });
 
 const dialog = ref(false);
 const currentChain = computed(() =>
