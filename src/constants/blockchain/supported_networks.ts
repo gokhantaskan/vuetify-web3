@@ -1,5 +1,7 @@
 import { ChainId } from "@/types/enums/chain_ids";
 
+export const DEFAULT_NETWORK = ChainId.ETHEREUM;
+
 export const SUPPORTED_NETWORKS: Record<
   number,
   {

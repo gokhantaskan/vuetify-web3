@@ -3,12 +3,13 @@ import { mdiContentCopy, mdiLogin, mdiOpenInNew, mdiPower } from "@mdi/js";
 import { useClipboard } from "@vueuse/core";
 import { useOnboard } from "@web3-onboard/vue";
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { useWeb3Provider } from "@/composables/useWeb3Provider";
+import { SUPPORTED_NETWORKS } from "@/constants/blockchain";
 import { useAppStore } from "@/stores/app";
 import { useBalancesStore } from "@/stores/balances";
-import { bigNumberToTrimmed } from "@/utils/format";
+import { bigNumberToTrimmed, numberToHex } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
 
 const {
@@ -21,10 +22,15 @@ const {
 
 const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
-const { address, ens } = storeToRefs(useAppStore());
+const { address, ens, chainId } = storeToRefs(useAppStore());
+const { copy, copied, isSupported } = useClipboard({ source: address.value });
 
 const dialog = ref(false);
-const { copy, copied, isSupported } = useClipboard({ source: address.value });
+const currentChain = computed(() =>
+  Object.values(SUPPORTED_NETWORKS).find(
+    n => n.chainId === numberToHex(chainId.value)
+  )
+);
 
 const connect = async () => {
   if (!alreadyConnectedWallets.value.length) await connectWallet();
@@ -100,19 +106,23 @@ watch(web3Provider, web3Provider => {
               </template>
             </v-tooltip>
           </template>
-          <v-tooltip text="Open In Explorer">
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                color="default"
-                variant="tonal"
-                size="small"
-                icon
-              >
-                <v-icon :icon="mdiOpenInNew" />
-              </v-btn>
-            </template>
-          </v-tooltip>
+          <template v-if="currentChain?.blockExplorerUrls[0]">
+            <v-tooltip text="Open In Explorer">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="default"
+                  variant="tonal"
+                  size="small"
+                  icon
+                  :href="`${currentChain?.blockExplorerUrls[0]}/address/${address}`"
+                  target="_blank"
+                >
+                  <v-icon :icon="mdiOpenInNew" />
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
           <v-tooltip text="Disconnect">
             <template #activator="{ props }">
               <v-btn
@@ -137,9 +147,14 @@ watch(web3Provider, web3Provider => {
                   class="tw-max-w-fit tw-mx-auto tw-underline tw-underline-offset-1"
                   v-bind="props"
                 >
-                  <span class="tw-font-bold tw-mr-2 tw-inline-block">Ξ</span>
                   <span class="tw-inline-block">{{
-                    bigNumberToTrimmed(balancesStore.ETH.raw)
+                    bigNumberToTrimmed(
+                      balancesStore.ETH.raw,
+                      currentChain?.nativeCurrency.decimals
+                    )
+                  }}</span>
+                  <span class="tw-font-bold tw-mr-2 tw-inline-block tw-ml-2">{{
+                    currentChain?.nativeCurrency.symbol
                   }}</span>
                 </p>
               </template>

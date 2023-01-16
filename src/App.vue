@@ -19,6 +19,16 @@ const { address, chainId } = storeToRefs(useAppStore());
 const { getEthBalance, resetEthBalance } = useBalancesStore();
 
 const drawer = ref<boolean>(false);
+const listItems = ref([
+  {
+    title: "Home",
+    to: { name: "Home" },
+  },
+  {
+    title: "About",
+    to: { name: "About" },
+  },
+]);
 
 onMounted(async () => {
   if (
@@ -27,7 +37,7 @@ onMounted(async () => {
     await connectWallet({
       autoSelect: {
         label: alreadyConnectedWallets.value[0],
-        disableModals: false,
+        disableModals: true,
       },
     });
   }
@@ -58,7 +68,7 @@ watch([address, chainId], async ([address, chainId]) => {
       <v-app-bar-title>Application</v-app-bar-title>
       <v-spacer></v-spacer>
       <div class="tw-mr-[10px] tw-space-x-4">
-        <NetworkDialog />
+        <NetworkDialog v-if="alreadyConnectedWallets[0]" />
         <ConnectWallet />
       </div>
     </v-app-bar>
@@ -71,14 +81,15 @@ watch([address, chainId], async ([address, chainId]) => {
         density="compact"
         nav
       >
-        <v-list-item
-          title="Home"
-          :to="{ name: 'Home' }"
-        ></v-list-item>
-        <v-list-item
-          title="About"
-          :to="{ name: 'About' }"
-        ></v-list-item>
+        <template
+          v-for="(item, i) in listItems"
+          :key="i"
+        >
+          <v-list-item
+            :title="item.title"
+            :to="item.to"
+          ></v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
     <v-main :scrollable="true">

@@ -66,7 +66,6 @@ const switchChain = async (network: Network) => {
 
 <template>
   <v-btn
-    v-if="alreadyConnectedWallets[0]"
     icon
     size="small"
     :color="isNetworkSupported ? 'default' : 'danger'"
