@@ -68,7 +68,7 @@ watch([address, chainId], async ([address, chainId]) => {
       <v-app-bar-title>Application</v-app-bar-title>
       <v-spacer></v-spacer>
       <div class="tw-mr-[10px] tw-space-x-4">
-        <NetworkDialog v-if="alreadyConnectedWallets[0]" />
+        <NetworkDialog />
         <ConnectWallet />
       </div>
     </v-app-bar>

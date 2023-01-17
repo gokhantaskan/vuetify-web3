@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { mdiContentCopy, mdiLogin, mdiOpenInNew, mdiPower } from "@mdi/js";
 import { useClipboard } from "@vueuse/core";
-import { useOnboard } from "@web3-onboard/vue";
+import { debounce } from "lodash";
 import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 
@@ -12,58 +12,51 @@ import { useBalancesStore } from "@/stores/balances";
 import { bigNumberToTrimmed, numberToHex } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
 
-const {
-  connectWallet,
-  connectingWallet,
-  connectedWallet,
-  alreadyConnectedWallets,
-  disconnectConnectedWallet,
-} = useOnboard();
-
 const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
 const { address, chainId } = storeToRefs(useAppStore());
+const { connectToDapp, connectingToDapp, disconnectFromDapp } = useAppStore();
 const { copy, copied, isSupported } = useClipboard({ source: address });
 
 const dialog = ref(false);
-const ens = ref<string | null | undefined>("");
+const ens = ref<string | null>("");
+
 const currentChain = computed(() =>
   Object.values(SUPPORTED_NETWORKS).find(
     n => n.chainId === numberToHex(chainId.value)
   )
 );
 
-const connect = async () => {
-  if (!alreadyConnectedWallets.value.length) await connectWallet();
-};
-
-const disconnect = async () => {
-  await disconnectConnectedWallet();
-};
-
-watch(web3Provider, async web3Provider => {
-  if (!web3Provider) {
-    dialog.value = false;
-  } else {
-    try {
-      ens.value = await web3Provider?.lookupAddress(address.value);
-    } catch (e: any) {
-      ens.value = undefined;
-      console.error("ENS resolve error: ", e);
-    }
-  }
-});
+watch(
+  web3Provider,
+  debounce(
+    async web3Provider => {
+      if (!web3Provider) {
+        dialog.value = false;
+      } else {
+        try {
+          ens.value = await web3Provider?.lookupAddress(address.value);
+        } catch (e: any) {
+          ens.value = null;
+          console.error("ENS resolve error: ", e);
+        }
+      }
+    },
+    200,
+    { leading: false, trailing: true }
+  )
+);
 </script>
 
 <template>
-  <template v-if="!connectedWallet">
+  <template v-if="!web3Provider">
     <v-tooltip text="Connect">
       <template #activator="{ props }">
         <v-btn
           v-bind="props"
-          :loading="connectingWallet"
+          :loading="connectingToDapp"
           variant="tonal"
-          @click="connect"
+          @click="connectToDapp"
         >
           <v-icon :icon="mdiLogin"></v-icon>
         </v-btn>
@@ -88,7 +81,7 @@ watch(web3Provider, async web3Provider => {
       :elevation="2"
       class="tw-p-4 tw-text-center"
     >
-      <div>
+      <div v-if="web3Provider">
         <template v-if="ens">
           <p class="tw-text-xl tw-font-medium tw-leading-loose">{{ ens }}</p>
           <p>{{ trimText(address) }}</p>
@@ -100,6 +93,7 @@ watch(web3Provider, async web3Provider => {
         </template>
 
         <div class="tw-space-x-2 tw-mt-4">
+          <!-- Clipboard -->
           <template v-if="isSupported">
             <v-tooltip :text="copied ? 'Copied!' : 'Copy Address'">
               <template #activator="{ props }">
@@ -116,6 +110,7 @@ watch(web3Provider, async web3Provider => {
               </template>
             </v-tooltip>
           </template>
+          <!-- Explorer -->
           <template v-if="currentChain?.blockExplorerUrls[0]">
             <v-tooltip text="Open In Explorer">
               <template #activator="{ props }">
@@ -133,6 +128,7 @@ watch(web3Provider, async web3Provider => {
               </template>
             </v-tooltip>
           </template>
+          <!-- Disconnect -->
           <v-tooltip text="Disconnect">
             <template #activator="{ props }">
               <v-btn
@@ -141,7 +137,7 @@ watch(web3Provider, async web3Provider => {
                 variant="tonal"
                 size="small"
                 icon
-                @click="disconnect"
+                @click="disconnectFromDapp"
               >
                 <v-icon :icon="mdiPower" />
               </v-btn>
@@ -150,6 +146,7 @@ watch(web3Provider, async web3Provider => {
         </div>
 
         <div class="tw-mt-8">
+          <!-- Native Balance -->
           <template v-if="balancesStore.ETH.raw">
             <v-tooltip :text="`Balance: ${balancesStore.ETH.str}`">
               <template #activator="{ props }">
@@ -172,6 +169,7 @@ watch(web3Provider, async web3Provider => {
           </template>
         </div>
       </div>
+      <div v-else>Disconnecting...</div>
     </v-card>
   </v-dialog-base>
 </template>

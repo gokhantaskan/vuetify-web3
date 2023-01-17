@@ -1,5 +1,7 @@
 # vue3-vite
 
+https://benevolent-dasik-c78a07.netlify.app/
+
 Vue and Vite with stable Vuetify release. The best Tailwind implementation to make the development process easier.
 
 Blocknative's Web3 Onboard for the best web3 connection experience.

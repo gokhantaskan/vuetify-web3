@@ -5,16 +5,17 @@ import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 
 import DialogCard from "@/components/DialogCard/DialogCard.vue";
+import { useWeb3Provider } from "@/composables/useWeb3Provider";
 import { NETWORK_ICON, SUPPORTED_NETWORKS } from "@/constants/blockchain";
-// import { switchToNetwork } from "@/utils/network";
 import { supportedNetworks } from "@/plugins/onboard";
 import { useAppStore } from "@/stores/app";
 import { hexToNumber, numberToHex } from "@/utils/format";
+import { switchToNetwork } from "@/utils/network";
 
 type Network = (typeof SUPPORTED_NETWORKS)[keyof typeof SUPPORTED_NETWORKS];
 
-const { setChain, settingChain, alreadyConnectedWallets } = useOnboard();
-// const { web3Provider } = useWeb3Provider();
+const { alreadyConnectedWallets } = useOnboard();
+const { web3Provider } = useWeb3Provider();
 const { chainId } = storeToRefs(useAppStore());
 
 const dialog = ref(false);
@@ -40,17 +41,13 @@ const switchChain = async (network: Network) => {
   overlay.value = true;
 
   try {
-    await setChain({
-      chainId: network.chainId,
-      wallet: alreadyConnectedWallets.value[0],
-    });
-    // const provider = web3Provider.value?.provider;
+    const provider = web3Provider.value?.provider;
 
-    // if (provider)
-    //   await switchToNetwork({
-    //     provider,
-    //     chainId: hexToNumber(network.chainId),
-    //   });
+    if (provider)
+      await switchToNetwork({
+        provider,
+        chainId: hexToNumber(network.chainId),
+      });
 
     dialog.value = false;
   } catch (error: any) {
@@ -62,6 +59,15 @@ const switchChain = async (network: Network) => {
     overlay.value = false;
   }
 };
+
+const onNetworkBtnClick = () => {
+  if (alreadyConnectedWallets.value.length) {
+    dialog.value = true;
+  } else {
+    snackbar.value = true;
+    errorMsg.value = "Please connect your wallet first.";
+  }
+};
 </script>
 
 <template>
@@ -70,7 +76,7 @@ const switchChain = async (network: Network) => {
     size="small"
     :color="isNetworkSupported ? 'default' : 'danger'"
     :variant="isNetworkSupported ? undefined : 'flat'"
-    @click="() => (dialog = true)"
+    @click="onNetworkBtnClick"
   >
     <template v-if="isNetworkSupported">
       <img
@@ -95,14 +101,14 @@ const switchChain = async (network: Network) => {
     >
       <div class="tw-grid tw-grid-col-1 md:tw-grid-cols-2 tw-gap-4">
         <div
-          v-if="settingChain"
+          v-if="overlay"
           class="tw-col-span-1 md:tw-col-span-2"
         >
           <v-alert
             color="success"
             variant="tonal"
           >
-            Switching...
+            Switching ...
           </v-alert>
         </div>
         <template
@@ -152,7 +158,6 @@ const switchChain = async (network: Network) => {
   <v-snackbar
     v-model="snackbar"
     color="danger"
-    :timeout="1231323"
   >
     {{ errorMsg }}
 

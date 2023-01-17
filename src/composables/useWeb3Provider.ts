@@ -13,11 +13,12 @@ export function useWeb3Provider() {
   });
 
   const jsonRPCProvider = computed<JsonRpcProvider | null>(() => {
-    console.log(RPC_URLS[appStore.chainId]);
-
-    if (appStore.chainId)
+    try {
       return new JsonRpcProvider(RPC_URLS[appStore.chainId]);
-    return null;
+    } catch (e: any) {
+      console.error("Error creating JsonRpcProvider", e);
+      return null;
+    }
   });
 
   return {

@@ -35,7 +35,7 @@ export const switchToNetwork = async ({
       params: [{ chainId: params.chainId }],
     });
   } catch (error) {
-    console.log("Error switching network", error);
+    console.error("Error switching network", error);
 
     // @ts-ignore TYPE NEEDS FIXING
     if (error.code === 4902) {
@@ -50,10 +50,10 @@ export const switchToNetwork = async ({
           params: [{ chainId: params.chainId }],
         });
       } catch (error) {
-        console.log("Added network but could not switch chains", error);
+        console.error("Added network but could not switch chains", error);
       }
     } else {
-      console.log("Switch chain error", error);
+      console.error("Switch chain error", error);
       throw error;
     }
   }
