@@ -9,6 +9,13 @@ export function hexToNumber(hex: string): number {
   return parseInt(hex, 16);
 }
 
+/**
+ *
+ * @param balance Token balance in BigNumber format
+ * @param decimals Token decimals
+ * @param fixed The number of decimal places to show
+ * @returns string representation of the balance
+ */
 export function bigNumberToTrimmed(
   balance: BigNumber,
   decimals = 18,
@@ -22,10 +29,10 @@ export function bigNumberToTrimmed(
 
   if (balance.isZero()) {
     return "0";
-
-    // TODO: implement `fixed` here, don't change it for now
-  } else if (BigNumber.from(parseUnits("0.0001", decimals)).gt(balance)) {
-    return "< 0.0001";
+  } else if (
+    BigNumber.from(parseUnits(formatUnits("1", fixed), decimals)).gt(balance)
+  ) {
+    return `< ${formatUnits("1", fixed)}`;
   } else {
     const [l, r] = formatUnits(balance.toString()).split(".");
 

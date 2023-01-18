@@ -12,8 +12,8 @@ import { useBalancesStore } from "@/stores/balances";
 import { bigNumberToTrimmed, numberToHex } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
 
-const balancesStore = useBalancesStore();
 const { web3Provider } = useWeb3Provider();
+const { eth } = storeToRefs(useBalancesStore());
 const { address, chainId } = storeToRefs(useAppStore());
 const { connectToDapp, connectingToDapp, disconnectFromDapp } = useAppStore();
 const { copy, copied, isSupported } = useClipboard({ source: address });
@@ -42,7 +42,7 @@ watch(
         }
       }
     },
-    200,
+    250,
     { leading: false, trailing: true }
   )
 );
@@ -147,25 +147,22 @@ watch(
 
         <div class="tw-mt-8">
           <!-- Native Balance -->
-          <template v-if="balancesStore.ETH.raw">
-            <v-tooltip :text="`Balance: ${balancesStore.ETH.str}`">
-              <template #activator="{ props }">
-                <p
-                  class="tw-max-w-fit tw-mx-auto tw-underline tw-underline-offset-1"
-                  v-bind="props"
-                >
-                  <span class="tw-inline-block">{{
-                    bigNumberToTrimmed(
-                      balancesStore.ETH.raw,
+          <template v-if="eth.raw">
+            <p
+              class="tw-max-w-fit tw-mx-auto tw-underline tw-underline-offset-1"
+            >
+              <span class="tw-inline-block">{{
+                eth.loading
+                  ? "..."
+                  : bigNumberToTrimmed(
+                      eth.raw,
                       currentChain?.nativeCurrency.decimals
                     )
-                  }}</span>
-                  <span class="tw-font-bold tw-mr-2 tw-inline-block tw-ml-2">{{
-                    currentChain?.nativeCurrency.symbol
-                  }}</span>
-                </p>
-              </template>
-            </v-tooltip>
+              }}</span>
+              <span class="tw-font-bold tw-mr-2 tw-inline-block tw-ml-2">{{
+                currentChain?.nativeCurrency.symbol
+              }}</span>
+            </p>
           </template>
         </div>
       </div>

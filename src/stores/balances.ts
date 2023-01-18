@@ -10,35 +10,40 @@ export interface IBalance {
   str: BalanceStr;
 }
 export interface IBalances {
-  [key: string]: IBalance;
+  [key: string]: IBalance & Partial<{ loading: boolean; error: string | null }>;
 }
 
 export const useBalancesStore = defineStore("balances", {
   state: (): IBalances => ({
-    ETH: {
+    eth: {
       raw: null,
       str: null,
+      error: null,
+      loading: false,
     },
   }),
   actions: {
     async getEthBalance(provider: Web3Provider, address: string) {
-      this.resetEthBalance();
-
-      console.log("Fetching ETH balance...");
-
-      try {
-        this.ETH.raw = await provider.getBalance(address);
-        this.ETH.str = formatEther(this.ETH.raw);
-      } catch (e: any) {
-        this.resetEthBalance();
-        throw new Error("Error getting ETH balance: " + e);
+      if (!provider || !address) {
+        return;
       }
 
-      console.log("ETH balance: ", this.ETH);
+      try {
+        this.eth.loading = true;
+        this.eth.raw = await provider.getBalance(address);
+        this.eth.str = formatEther(this.eth.raw);
+
+        console.log("ETH balance: ", this.eth);
+      } catch (e: any) {
+        throw new Error("Error getting ETH balance: " + e);
+      } finally {
+        this.eth.loading = false;
+      }
     },
     resetEthBalance() {
-      this.ETH.raw = null;
-      this.ETH.str = null;
+      this.eth.raw = null;
+      this.eth.str = null;
+      this.eth.error = null;
     },
   },
 });

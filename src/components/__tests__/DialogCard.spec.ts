@@ -1,16 +1,13 @@
-// import { mount } from "@vue/test-utils";
-import { assert, test } from "vitest";
+import { mount } from "@vue/test-utils";
+import { describe, expect, it, test } from "vitest";
 
-test.skip("skipped test", () => {
-  // Test skipped, no error
-  assert.equal(Math.sqrt(4), 3);
+import DialogCard from "@/components/DialogCard/DialogCard.vue";
+
+test.skip("", () => {
+  describe("DialogCard", () => {
+    it("renders properly", () => {
+      const wrapper = mount(DialogCard, { props: { title: "Hello Vitest" } });
+      expect(wrapper.text()).toContain("Hello Vitest");
+    });
+  });
 });
-
-// import DialogCard from "../DialogCard/DialogCard.vue";
-
-// describe("DialogCard", () => {
-//   it("renders properly", () => {
-//     const wrapper = mount(DialogCard, { props: { msg: "Hello Vitest" } });
-//     expect(wrapper.text()).toContain("Hello Vitest");
-//   });
-// });

@@ -3,7 +3,7 @@ import "@/plugins/onboard";
 
 import { useOnboard } from "@web3-onboard/vue";
 import { storeToRefs } from "pinia";
-import { onMounted, ref, unref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 import ConnectWallet from "@/components/ConnectWallet/ConnectWallet.vue";
 import NetworkDialog from "@/components/NetworkDialog/NetworkDialog.vue";
@@ -43,14 +43,13 @@ onMounted(async () => {
   }
 });
 
-watch([address, chainId], async ([address, chainId]) => {
-  const provider = unref(web3Provider);
+watch([address, chainId], async ([address, chainId], [_address, _chainId]) => {
+  const chainChanged = chainId !== _chainId && typeof chainId === "number";
+  const addressChanged = address !== _address && typeof address === "string";
 
-  if (typeof address === "string" && !isNaN(chainId) && provider) {
-    getEthBalance(provider, address);
-  }
-
-  if (!provider || isNaN(chainId)) {
+  if (web3Provider.value && (addressChanged || chainChanged)) {
+    getEthBalance(web3Provider.value, address);
+  } else {
     resetEthBalance();
   }
 });
