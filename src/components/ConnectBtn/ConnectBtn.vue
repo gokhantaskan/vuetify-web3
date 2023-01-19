@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import { mdiLogin } from "@mdi/js";
+import { storeToRefs } from "pinia";
 
 import { useAppStore } from "@/stores/app";
 
 defineProps({
-  onlyIcon: {
+  iconOnly: {
     type: Boolean,
     default: false,
   },
 });
 
-const { connectToDapp, connectingToDapp } = useAppStore();
+const { connectingToDapp } = storeToRefs(useAppStore());
+const { connectToDapp } = useAppStore();
 </script>
 
 <template>
-  <template v-if="!onlyIcon">
+  <template v-if="!iconOnly">
     <v-btn
       :loading="connectingToDapp"
       variant="tonal"

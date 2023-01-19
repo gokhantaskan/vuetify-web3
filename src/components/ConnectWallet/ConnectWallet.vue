@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mdiContentCopy, mdiLogin, mdiOpenInNew, mdiPower } from "@mdi/js";
+import { mdiContentCopy, mdiOpenInNew, mdiPower } from "@mdi/js";
 import { useClipboard } from "@vueuse/core";
 import { debounce } from "lodash";
 import { storeToRefs } from "pinia";
@@ -12,10 +12,12 @@ import { useBalancesStore } from "@/stores/balances";
 import { bigNumberToTrimmed, numberToHex } from "@/utils/format";
 import { trimText } from "@/utils/trim_text";
 
+import ConnectBtn from "../ConnectBtn/ConnectBtn.vue";
+
 const { web3Provider } = useWeb3Provider();
 const { eth } = storeToRefs(useBalancesStore());
 const { address, chainId } = storeToRefs(useAppStore());
-const { connectToDapp, connectingToDapp, disconnectFromDapp } = useAppStore();
+const { disconnectFromDapp } = useAppStore();
 const { copy, copied, isSupported } = useClipboard({ source: address });
 
 const dialog = ref(false);
@@ -50,18 +52,7 @@ watch(
 
 <template>
   <template v-if="!web3Provider">
-    <v-tooltip text="Connect">
-      <template #activator="{ props }">
-        <v-btn
-          v-bind="props"
-          :loading="connectingToDapp"
-          variant="tonal"
-          @click="connectToDapp"
-        >
-          <v-icon :icon="mdiLogin"></v-icon>
-        </v-btn>
-      </template>
-    </v-tooltip>
+    <ConnectBtn icon-only />
   </template>
   <template v-else>
     <v-btn

@@ -1,6 +1,6 @@
 import { useOnboard } from "@web3-onboard/vue";
 import { defineStore } from "pinia";
-import { computed, readonly, ref } from "vue";
+import { computed, ref } from "vue";
 
 import { DEFAULT_NETWORK } from "@/constants/blockchain/supported_networks";
 import { hexToNumber } from "@/utils/format";
@@ -16,6 +16,8 @@ export const useAppStore = defineStore("app", () => {
   } = useOnboard();
 
   const provider = computed(() => connectedWallet.value?.provider);
+
+  const connectingToDapp = computed(() => connectingWallet.value);
 
   const wallet = computed(() => ({
     label: connectedWallet.value?.label,
@@ -45,8 +47,8 @@ export const useAppStore = defineStore("app", () => {
   return {
     // State
     renderKey,
-    connectingToDapp: readonly(connectingWallet),
     // Getters
+    connectingToDapp,
     provider,
     wallet,
     chainId,

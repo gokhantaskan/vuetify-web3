@@ -25,7 +25,7 @@ export const SUPPORTED_NETWORKS: Record<
       decimals: 18,
     },
     rpcUrls: ["https://mainnet.infura.io/v3"],
-    blockExplorerUrls: ["https://etherscan.com"],
+    blockExplorerUrls: ["https://etherscan.io"],
   },
   [ChainId.GOERLI]: {
     chainId: "0x5",
@@ -36,7 +36,7 @@ export const SUPPORTED_NETWORKS: Record<
       decimals: 18,
     },
     rpcUrls: ["https://goerli.infura.io/v3"],
-    blockExplorerUrls: ["https://goerli.etherscan.com"],
+    blockExplorerUrls: ["https://goerli.etherscan.io"],
   },
   [ChainId.FANTOM]: {
     chainId: "0xfa",
