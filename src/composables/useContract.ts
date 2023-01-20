@@ -43,7 +43,7 @@ export function useContract<T extends Contract = Contract>(
 }
 
 export function useTokenContract(
-  address: string,
+  address: string | AddressMap | undefined,
   withSignerIfPossible?: boolean
 ): Contract | null {
   return useContract(address, ERC20_ABI, withSignerIfPossible);
