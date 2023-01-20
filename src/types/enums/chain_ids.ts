@@ -6,5 +6,5 @@ export enum ChainId {
   BSC = 56,
   ARBITRUM = 42161,
   AVALANCHE = 43114,
-  HARDHAT = 31337,
+  HARDHAT = 1337,
 }

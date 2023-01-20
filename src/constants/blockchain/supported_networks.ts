@@ -1,10 +1,8 @@
 import { ChainId } from "@/types/enums/chain_ids";
+import { numberToHex } from "@/utils/format";
 
-export const DEFAULT_NETWORK = ChainId.ETHEREUM;
-
-export const SUPPORTED_NETWORKS: Record<
-  number,
-  {
+export interface ISupportedNetworks {
+  [network: number]: {
     chainId: string;
     chainName: string;
     nativeCurrency: {
@@ -13,11 +11,18 @@ export const SUPPORTED_NETWORKS: Record<
       decimals: number;
     };
     rpcUrls: string[];
-    blockExplorerUrls: string[];
-  }
-> = {
+    blockExplorerUrls?: string[];
+  };
+}
+
+export type SupportedNetwork =
+  (typeof SUPPORTED_NETWORKS)[keyof typeof SUPPORTED_NETWORKS];
+
+export const DEFAULT_NETWORK = ChainId.ETHEREUM;
+
+export const SUPPORTED_NETWORKS: ISupportedNetworks = {
   [ChainId.ETHEREUM]: {
-    chainId: "0x1",
+    chainId: `${numberToHex(ChainId.ETHEREUM)}`,
     chainName: "Ethereum",
     nativeCurrency: {
       name: "Ethereum",
@@ -28,7 +33,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://etherscan.io"],
   },
   [ChainId.GOERLI]: {
-    chainId: "0x5",
+    chainId: `${numberToHex(ChainId.GOERLI)}`,
     chainName: "Görli",
     nativeCurrency: {
       name: "Ethereum",
@@ -39,7 +44,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://goerli.etherscan.io"],
   },
   [ChainId.FANTOM]: {
-    chainId: "0xfa",
+    chainId: `${numberToHex(ChainId.FANTOM)}`,
     chainName: "Fantom Opera",
     nativeCurrency: {
       name: "Fantom",
@@ -50,7 +55,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://ftmscan.com"],
   },
   [ChainId.BSC]: {
-    chainId: "0x38",
+    chainId: `${numberToHex(ChainId.BSC)}`,
     chainName: "Binance Smart Chain",
     nativeCurrency: {
       name: "Binance Coin",
@@ -61,7 +66,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://bscscan.com"],
   },
   [ChainId.POLYGON]: {
-    chainId: "0x89",
+    chainId: `${numberToHex(ChainId.POLYGON)}`,
     chainName: "Polygon Mainnet",
     nativeCurrency: {
       name: "Matic",
@@ -72,7 +77,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://polygonscan.com"],
   },
   [ChainId.AVALANCHE]: {
-    chainId: "0xa86a",
+    chainId: `${numberToHex(ChainId.AVALANCHE)}`,
     chainName: "Avalanche C-Chain",
     nativeCurrency: {
       name: "Avalanche Token",
@@ -83,7 +88,7 @@ export const SUPPORTED_NETWORKS: Record<
     blockExplorerUrls: ["https://snowtrace.io"],
   },
   [ChainId.ARBITRUM]: {
-    chainId: "0xa4b1",
+    chainId: `${numberToHex(ChainId.ARBITRUM)}`,
     chainName: "Arbitrum One",
     nativeCurrency: {
       name: "Ethereum",
@@ -92,5 +97,15 @@ export const SUPPORTED_NETWORKS: Record<
     },
     rpcUrls: ["https://arb1.arbitrum.io/rpc"],
     blockExplorerUrls: ["https://arbiscan.io"],
+  },
+  [ChainId.HARDHAT]: {
+    chainId: `${numberToHex(ChainId.HARDHAT)}`,
+    chainName: "Hardhat",
+    nativeCurrency: {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: ["http://localhost:8545"],
   },
 };

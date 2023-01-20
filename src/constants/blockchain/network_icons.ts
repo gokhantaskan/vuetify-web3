@@ -1,10 +1,11 @@
-import ethereum from "@/assets/img/icons/chains/1.svg";
-import goerli from "@/assets/img/icons/chains/5.svg";
-import bsc from "@/assets/img/icons/chains/56.svg";
-import polygon from "@/assets/img/icons/chains/137.svg";
-import fantom from "@/assets/img/icons/chains/250.svg";
-import arbitrum from "@/assets/img/icons/chains/42161.svg";
-import avalanche from "@/assets/img/icons/chains/43114.svg";
+import arbitrum from "@/assets/img/icons/chains/arbitrum.svg";
+import avalanche from "@/assets/img/icons/chains/avax.svg";
+import bsc from "@/assets/img/icons/chains/bsc.svg";
+import ethereum from "@/assets/img/icons/chains/ethereum.svg";
+import fantom from "@/assets/img/icons/chains/fantom.svg";
+import goerli from "@/assets/img/icons/chains/goerli.svg";
+import localhost from "@/assets/img/icons/chains/localhost.svg";
+import polygon from "@/assets/img/icons/chains/polygon.svg";
 import { ChainId } from "@/types/enums/chain_ids";
 
 export const NETWORK_ICON: Record<number, string> = {
@@ -15,4 +16,5 @@ export const NETWORK_ICON: Record<number, string> = {
   [ChainId.POLYGON]: polygon,
   [ChainId.AVALANCHE]: avalanche,
   [ChainId.ARBITRUM]: arbitrum,
+  [ChainId.HARDHAT]: localhost,
 };

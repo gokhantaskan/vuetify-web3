@@ -6,13 +6,15 @@ import { computed, ref } from "vue";
 
 import DialogCard from "@/components/DialogCard/DialogCard.vue";
 import { useWeb3Provider } from "@/composables/useWeb3Provider";
-import { NETWORK_ICON, SUPPORTED_NETWORKS } from "@/constants/blockchain";
+import {
+  type SupportedNetwork,
+  NETWORK_ICON,
+  SUPPORTED_NETWORKS,
+} from "@/constants/blockchain";
 import { supportedNetworks } from "@/plugins/onboard";
 import { useAppStore } from "@/stores/app";
 import { hexToNumber, numberToHex } from "@/utils/format";
 import { switchToNetwork } from "@/utils/network";
-
-type Network = (typeof SUPPORTED_NETWORKS)[keyof typeof SUPPORTED_NETWORKS];
 
 const { alreadyConnectedWallets } = useOnboard();
 const { web3Provider } = useWeb3Provider();
@@ -31,13 +33,13 @@ const isNetworkSupported = computed(() =>
   networkIds.includes(numberToHex(chainId.value).toLowerCase())
 );
 
-const isCurrentNetwork = (network: Network) => {
+const isCurrentNetwork = (network: SupportedNetwork) => {
   return (
     network.chainId.toLowerCase() === numberToHex(chainId.value).toLowerCase()
   );
 };
 
-const switchChain = async (network: Network) => {
+const switchChain = async (network: SupportedNetwork) => {
   overlay.value = true;
 
   try {
