@@ -2,21 +2,23 @@
 import { mdiLogin } from "@mdi/js";
 import { storeToRefs } from "pinia";
 
+import { useBreakpoints } from "@/composables/useBreakpoints";
 import { useAppStore } from "@/stores/app";
 
 defineProps({
-  iconOnly: {
+  icon: {
     type: Boolean,
     default: false,
   },
 });
 
+const { isMobile } = useBreakpoints();
 const { connectingToDapp } = storeToRefs(useAppStore());
 const { connectToDapp } = useAppStore();
 </script>
 
 <template>
-  <template v-if="!iconOnly">
+  <template v-if="!icon">
     <v-btn
       :loading="connectingToDapp"
       variant="tonal"
@@ -33,6 +35,8 @@ const { connectToDapp } = useAppStore();
         <v-btn
           v-bind="props"
           :loading="connectingToDapp"
+          :icon="isMobile"
+          :size="isMobile ? 'small' : undefined"
           variant="tonal"
           @click="connectToDapp"
         >

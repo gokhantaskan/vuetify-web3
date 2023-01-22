@@ -11,6 +11,9 @@ const development = MODE === "development";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ["color", "mersenne-twister"],
+  },
   plugins: [
     vue({
       template: { transformAssetUrls },
