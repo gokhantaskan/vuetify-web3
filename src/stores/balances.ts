@@ -35,6 +35,7 @@ export const useBalancesStore = defineStore("balances", {
 
         console.log("ETH balance: ", this.eth);
       } catch (e: any) {
+        this.eth.error = e;
         throw new Error("Error getting ETH balance: " + e);
       } finally {
         this.eth.loading = false;

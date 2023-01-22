@@ -4,6 +4,7 @@ import { useClipboard } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import type { PropType } from "vue";
 
+import JazzIcon from "@/components/JazzIcon/JazzIcon.vue";
 import type { SupportedNetwork } from "@/constants/blockchain";
 import { useAppStore } from "@/stores/app";
 import { useBalancesStore } from "@/stores/balances";
@@ -18,9 +19,11 @@ defineProps({
 });
 
 const { eth } = storeToRefs(useBalancesStore());
-const { address, ens } = storeToRefs(useAppStore());
+const { address, ens, wallet } = storeToRefs(useAppStore());
 const { disconnectFromDapp } = useAppStore();
 const { copy, copied, isSupported } = useClipboard({ source: address });
+
+const iconSize = 36;
 </script>
 
 <template>
@@ -28,6 +31,34 @@ const { copy, copied, isSupported } = useClipboard({ source: address });
     :elevation="2"
     class="tw-p-4 tw-text-center"
   >
+    <div>
+      <span
+        class="tw-inline-block tw-relative"
+        :style="{
+          width: `${iconSize}px`,
+          height: `${iconSize}px`,
+        }"
+      >
+        <JazzIcon
+          :address="address"
+          :size="iconSize"
+        />
+        <div
+          :class="[
+            'tw-absolute tw-bottom-0 tw-right-0',
+            'tw-inline-flex tw-items-center tw-justify-center',
+            'tw-rounded-full',
+            'tw-bg-white',
+            'tw-p-[2px]',
+          ]"
+          :style="{
+            width: `${iconSize / 2}px`,
+            height: `${iconSize / 2}px`,
+          }"
+          v-html="wallet.icon"
+        ></div>
+      </span>
+    </div>
     <div v-if="currentChain && address">
       <template v-if="ens">
         <p class="tw-text-xl tw-font-medium tw-leading-loose">{{ ens }}</p>

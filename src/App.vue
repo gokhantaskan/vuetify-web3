@@ -66,7 +66,7 @@ watch([address, chainId], async ([address, chainId], [_address, _chainId]) => {
       ></v-app-bar-nav-icon>
       <v-app-bar-title>Application</v-app-bar-title>
       <v-spacer></v-spacer>
-      <div class="tw-mr-[10px] tw-space-x-4">
+      <div class="tw-mr-[10px] tw-space-x-2 md:tw-space-x-4">
         <NetworkDialog />
         <ConnectWallet />
       </div>
