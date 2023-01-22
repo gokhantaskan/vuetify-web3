@@ -31,35 +31,37 @@ const iconSize = 36;
     :elevation="2"
     class="tw-p-4 tw-text-center"
   >
-    <div>
-      <span
-        class="tw-inline-block tw-relative"
-        :style="{
-          width: `${iconSize}px`,
-          height: `${iconSize}px`,
-        }"
-      >
-        <JazzIcon
-          :address="address"
-          :size="iconSize"
-        />
-        <div
-          :class="[
-            'tw-absolute tw-bottom-0 tw-right-0',
-            'tw-inline-flex tw-items-center tw-justify-center',
-            'tw-rounded-full',
-            'tw-bg-white',
-            'tw-p-[2px]',
-          ]"
-          :style="{
-            width: `${iconSize / 2}px`,
-            height: `${iconSize / 2}px`,
-          }"
-          v-html="wallet.icon"
-        ></div>
-      </span>
-    </div>
     <div v-if="currentChain && address">
+      <!-- Avatar -->
+      <div>
+        <span
+          class="tw-inline-block tw-relative"
+          :style="{
+            width: `${iconSize}px`,
+            height: `${iconSize}px`,
+          }"
+        >
+          <JazzIcon
+            :address="address"
+            :size="iconSize"
+          />
+          <div
+            :class="[
+              'tw-absolute tw-bottom-0 tw-right-0',
+              'tw-inline-flex tw-items-center tw-justify-center',
+              'tw-rounded-full',
+              'tw-bg-white',
+              'tw-p-[2px]',
+            ]"
+            :style="{
+              width: `${iconSize / 2}px`,
+              height: `${iconSize / 2}px`,
+            }"
+            v-html="wallet.icon"
+          ></div>
+        </span>
+      </div>
+      <!-- /Avatar -->
       <template v-if="ens">
         <p class="tw-text-xl tw-font-medium tw-leading-loose">{{ ens }}</p>
         <p>{{ trimText(address) }}</p>
