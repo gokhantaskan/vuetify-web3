@@ -23,8 +23,18 @@ defineProps({
 <template>
   <Jazzicon
     v-if="isMounted"
-    class="tw-inline-flex"
+    class="jazzicon"
     :address="address"
     :diameter="size"
   />
 </template>
+
+<style scoped lang="scss">
+.jazzicon {
+  @apply tw-overflow-hidden tw-inline-flex tw-items-center tw-justify-center tw-rounded-full;
+
+  :deep(div) {
+    @apply tw-scale-105;
+  }
+}
+</style>

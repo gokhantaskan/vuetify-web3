@@ -47,7 +47,7 @@ const iconSize = 36;
           />
           <div
             :class="[
-              'tw-absolute tw-bottom-0 tw-right-0',
+              'tw-absolute',
               'tw-inline-flex tw-items-center tw-justify-center',
               'tw-rounded-full',
               'tw-bg-white',
@@ -56,6 +56,8 @@ const iconSize = 36;
             :style="{
               width: `${iconSize / 2}px`,
               height: `${iconSize / 2}px`,
+              bottom: `-${iconSize / 8}px`,
+              right: `-${iconSize / 8}px`,
             }"
             v-html="wallet.icon"
           ></div>

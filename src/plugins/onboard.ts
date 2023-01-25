@@ -1,4 +1,5 @@
 import injectedModule from "@web3-onboard/injected-wallets";
+import ledgerModule from "@web3-onboard/ledger";
 import { init } from "@web3-onboard/vue";
 import walletConnectModule from "@web3-onboard/walletconnect";
 
@@ -7,6 +8,7 @@ import { ChainId } from "@/types/enums/chain_ids";
 
 const injected = injectedModule();
 const walletConnect = walletConnectModule();
+const ledger = ledgerModule();
 
 /**
  * Remove test networks from the network dialog
@@ -15,7 +17,7 @@ const supportedNetworks = { ...SUPPORTED_NETWORKS };
 [ChainId.GOERLI, ChainId.HARDHAT].forEach(id => delete supportedNetworks[id]);
 
 init({
-  wallets: [injected, walletConnect],
+  wallets: [injected, walletConnect, ledger],
   chains: Object.values(supportedNetworks).map(network => ({
     id: network.chainId,
     label: network.chainName,

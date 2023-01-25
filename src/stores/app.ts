@@ -1,6 +1,8 @@
+import { Web3Provider } from "@ethersproject/providers";
 import { useOnboard } from "@web3-onboard/vue";
+import { debounce } from "lodash";
 import { defineStore } from "pinia";
-import { computed, readonly, ref } from "vue";
+import { computed, readonly, ref, watch } from "vue";
 
 import { DEFAULT_NETWORK } from "@/constants/blockchain/supported_networks";
 import { hexToNumber } from "@/utils/format";
@@ -41,10 +43,25 @@ export const useAppStore = defineStore("app", () => {
     await disconnectConnectedWallet();
   }
 
-  async function setEns(ensName?: string | null) {
-    if (!ensName) ens.value = null;
-    else ens.value = ensName;
-  }
+  watch(
+    [provider, address, chainId],
+    debounce(
+      async ([provider, address]) => {
+        if (provider) {
+          const web3Provider = new Web3Provider(provider);
+
+          try {
+            ens.value = await web3Provider?.lookupAddress(address);
+          } catch (e: any) {
+            ens.value = null;
+            console.error("ENS error: ", e);
+          }
+        }
+      },
+      250,
+      { leading: false, trailing: true }
+    )
+  );
 
   return {
     // State
@@ -59,6 +76,5 @@ export const useAppStore = defineStore("app", () => {
     // Functions
     connectToDapp,
     disconnectFromDapp,
-    setEns,
   };
 });

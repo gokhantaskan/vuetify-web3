@@ -16,7 +16,6 @@ import { trimText } from "@/utils/trim_text";
 const { web3Provider } = useWeb3Provider();
 const { isMobile, isDesktop } = useBreakpoints();
 const { address, chainId, ens } = storeToRefs(useAppStore());
-const { setEns } = useAppStore();
 
 const dialog = ref(false);
 
@@ -32,13 +31,6 @@ watch(
     async web3Provider => {
       if (!web3Provider) {
         dialog.value = false;
-      } else {
-        try {
-          setEns(await web3Provider?.lookupAddress(address.value));
-        } catch (e: any) {
-          setEns(null);
-          console.error("ENS resolve error: ", e);
-        }
       }
     },
     250,

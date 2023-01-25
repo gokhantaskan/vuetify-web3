@@ -1369,6 +1369,11 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@ledgerhq/connect-kit-loader@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/connect-kit-loader/-/connect-kit-loader-1.0.2.tgz#8554e16943f86cc2a5f6348a14dfe6e5bd0c572a"
+  integrity sha512-TQ21IjcZOw/scqypaVFY3jHVqI7X7Hta3qN/us6FvTol3AY06UmrhhXGww0E9xHmAbdX241ddwXEiMBSQZFr9g==
+
 "@mdi/js@^7.1.96":
   version "7.1.96"
   resolved "https://registry.yarnpkg.com/@mdi/js/-/js-7.1.96.tgz#9c5a7f8a20ea63c03b09a0dba1768fe8b70eeaf9"
@@ -2111,6 +2116,17 @@
     "@web3-onboard/common" "^2.2.3"
     joi "^17.6.1"
     lodash.uniqby "^4.7.0"
+
+"@web3-onboard/ledger@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/ledger/-/ledger-2.4.1.tgz#d719a4f3315ead3fce938d7cace7ef6c3f365cc3"
+  integrity sha512-ENA/kmLn2qgqx3SKziMo/10OPxEtEPjBe1e5eyMz7k7XOmb81+Q4rSXoIgTl0uoTu18Yn/5POGCV77/emR40IA==
+  dependencies:
+    "@ethersproject/providers" "^5.5.0"
+    "@ledgerhq/connect-kit-loader" "^1.0.2"
+    "@walletconnect/client" "^1.7.1"
+    "@web3-onboard/common" "^2.2.3"
+    rxjs "^7.5.2"
 
 "@web3-onboard/vue@^2.4.4":
   version "2.4.4"

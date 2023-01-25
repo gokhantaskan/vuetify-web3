@@ -16,7 +16,7 @@ import { useAppStore } from "@/stores/app";
 import { hexToNumber, numberToHex } from "@/utils/format";
 import { switchToNetwork } from "@/utils/network";
 
-const { alreadyConnectedWallets } = useOnboard();
+const { setChain, alreadyConnectedWallets } = useOnboard();
 const { web3Provider } = useWeb3Provider();
 const { chainId } = storeToRefs(useAppStore());
 
@@ -43,13 +43,17 @@ const switchChain = async (network: SupportedNetwork) => {
   overlay.value = true;
 
   try {
-    const provider = web3Provider.value?.provider;
+    setChain({
+      wallet: alreadyConnectedWallets.value[0],
+      chainId: network.chainId,
+    });
+    // const provider = web3Provider.value?.provider;
 
-    if (provider)
-      await switchToNetwork({
-        provider,
-        chainId: hexToNumber(network.chainId),
-      });
+    // if (provider)
+    //   await switchToNetwork({
+    //     provider,
+    //     chainId: hexToNumber(network.chainId),
+    //   });
 
     dialog.value = false;
   } catch (error: any) {
