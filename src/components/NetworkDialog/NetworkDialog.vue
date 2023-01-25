@@ -5,7 +5,6 @@ import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 
 import DialogCard from "@/components/DialogCard/DialogCard.vue";
-import { useWeb3Provider } from "@/composables/useWeb3Provider";
 import {
   type SupportedNetwork,
   NETWORK_ICON,
@@ -14,10 +13,8 @@ import {
 import { supportedNetworks } from "@/plugins/onboard";
 import { useAppStore } from "@/stores/app";
 import { hexToNumber, numberToHex } from "@/utils/format";
-import { switchToNetwork } from "@/utils/network";
 
 const { setChain, alreadyConnectedWallets } = useOnboard();
-const { web3Provider } = useWeb3Provider();
 const { chainId } = storeToRefs(useAppStore());
 
 const dialog = ref(false);
