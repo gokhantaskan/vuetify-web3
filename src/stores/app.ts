@@ -25,10 +25,10 @@ export const useAppStore = defineStore("app", () => {
     instance: connectedWallet.value?.instance,
   }));
   const address = computed(
-    () => connectedWallet.value?.accounts[0].address || ""
+    () => connectedWallet.value?.accounts[0].address || "",
   );
   const chainId = computed(
-    () => hexToNumber(connectedChain.value?.id ?? "") || DEFAULT_NETWORK
+    () => hexToNumber(connectedChain.value?.id ?? "") || DEFAULT_NETWORK,
   );
 
   // ? Force re-render of components on top of the app
@@ -59,8 +59,8 @@ export const useAppStore = defineStore("app", () => {
         }
       },
       250,
-      { leading: false, trailing: true }
-    )
+      { leading: false, trailing: true },
+    ),
   );
 
   return {

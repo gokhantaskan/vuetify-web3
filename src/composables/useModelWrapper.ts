@@ -3,7 +3,7 @@ import { computed } from "vue";
 export function useModelWrapper(
   props: Record<string, any>,
   emit: (event: string, ...args: any[]) => void,
-  name = "modelValue"
+  name = "modelValue",
 ) {
   return computed({
     get: () => props[name],

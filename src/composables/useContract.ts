@@ -12,7 +12,7 @@ import { useWeb3Provider } from "./useWeb3Provider";
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | AddressMap | undefined,
   ABI: any,
-  withSignerIfPossible = true
+  withSignerIfPossible = true,
 ): T | null {
   const { address: account, chainId } = storeToRefs(useAppStore());
   const { web3Provider: library } = useWeb3Provider();
@@ -33,7 +33,7 @@ export function useContract<T extends Contract = Contract>(
         address,
         ABI,
         library.value,
-        withSignerIfPossible && account.value ? account.value : undefined
+        withSignerIfPossible && account.value ? account.value : undefined,
       );
     } catch (error) {
       console.error("Failed to get contract", error);
@@ -44,7 +44,7 @@ export function useContract<T extends Contract = Contract>(
 
 export function useTokenContract(
   addressOrAddressMap: string | AddressMap | undefined,
-  withSignerIfPossible?: boolean
+  withSignerIfPossible?: boolean,
 ): Contract | null {
   return useContract(addressOrAddressMap, ERC20_ABI, withSignerIfPossible);
 }
