@@ -136,7 +136,7 @@ const iconSize = 36;
                 ? "..."
                 : bigNumberToTrimmed(
                     eth.raw,
-                    currentChain?.nativeCurrency.decimals
+                    currentChain?.nativeCurrency.decimals,
                   )
             }}</span>
             <span class="tw-font-bold tw-mr-2 tw-inline-block tw-ml-2">{{

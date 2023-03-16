@@ -23,11 +23,11 @@ const snackbar = ref(false);
 const errorMsg = ref("");
 
 const networkIds = Object.values(SUPPORTED_NETWORKS).map(network =>
-  network.chainId.toLowerCase()
+  network.chainId.toLowerCase(),
 );
 
 const isNetworkSupported = computed(() =>
-  networkIds.includes(numberToHex(chainId.value).toLowerCase())
+  networkIds.includes(numberToHex(chainId.value).toLowerCase()),
 );
 
 const isCurrentNetwork = (network: SupportedNetwork) => {

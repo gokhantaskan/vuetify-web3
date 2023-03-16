@@ -25,18 +25,18 @@ describe("bigNumberToTrimmed", () => {
     expect(bigNumberToTrimmed(BigNumber.from("0"))).toEqual("0");
     expect(bigNumberToTrimmed(BigNumber.from("1"))).toEqual("< 0.0001");
     expect(bigNumberToTrimmed(BigNumber.from("100000000000000"))).toEqual(
-      "0.0001"
+      "0.0001",
     );
     expect(bigNumberToTrimmed(BigNumber.from("1000000000000000000"))).toEqual(
-      "1"
+      "1",
     );
     expect(
-      bigNumberToTrimmed(BigNumber.from("1000000000000000000000"))
+      bigNumberToTrimmed(BigNumber.from("1000000000000000000000")),
     ).toEqual("1,000");
     expect(
       bigNumberToTrimmed(
-        BigNumber.from(parseUnits(formatUnits("123456789", 4), 18))
-      )
+        BigNumber.from(parseUnits(formatUnits("123456789", 4), 18)),
+      ),
     ).toEqual("12,345.6789");
   });
 });

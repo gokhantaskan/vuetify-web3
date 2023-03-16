@@ -7,7 +7,7 @@ describe("trimText", () => {
     expect(trimText("length<=10")).toEqual("...");
 
     expect(trimText("0xabcdef12345abcdef12345abcde12345abcde123")).toEqual(
-      "0xabcd...e123"
+      "0xabcd...e123",
     );
   });
 });

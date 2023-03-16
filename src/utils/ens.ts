@@ -53,7 +53,7 @@ const RESOLVER_ABI = [
 // cache the resolver contracts since most of them are the public resolver
 function resolverContract(
   resolverAddress: string,
-  provider: Provider
+  provider: Provider,
 ): Contract {
   return new Contract(resolverAddress, RESOLVER_ABI, provider);
 }
@@ -65,12 +65,12 @@ function resolverContract(
  */
 export async function resolveENSContentHash(
   ensName: string,
-  provider: Provider
+  provider: Provider,
 ): Promise<string> {
   const ensRegistrarContract = new Contract(
     REGISTRAR_ADDRESS,
     REGISTRAR_ABI,
-    provider
+    provider,
   );
   const hash = namehash(ensName);
   const resolverAddress = await ensRegistrarContract.resolver(hash);
@@ -81,7 +81,7 @@ export async function resolveENSContentHash(
 const ENS_NAME_REGEX = /^(([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\.)+)eth(\/.*)?$/;
 
 export function parseENSAddress(
-  ensAddress: string
+  ensAddress: string,
 ): { ensName: string; ensPath: string | undefined } | undefined {
   const match = ensAddress.match(ENS_NAME_REGEX);
 

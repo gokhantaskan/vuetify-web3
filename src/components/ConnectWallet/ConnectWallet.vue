@@ -21,8 +21,8 @@ const dialog = ref(false);
 
 const currentChain = computed(() =>
   Object.values(SUPPORTED_NETWORKS).find(
-    n => n.chainId === numberToHex(chainId.value)
-  )
+    n => n.chainId === numberToHex(chainId.value),
+  ),
 );
 
 watch(
@@ -34,8 +34,8 @@ watch(
       }
     },
     250,
-    { leading: false, trailing: true }
-  )
+    { leading: false, trailing: true },
+  ),
 );
 </script>
 

@@ -19,11 +19,11 @@ export function hexToNumber(hex: string): number {
 export function bigNumberToTrimmed(
   balance: BigNumber,
   decimals = 18,
-  fixed = 4
+  fixed = 4,
 ): string {
   if (!(balance instanceof BigNumber)) {
     throw new Error(
-      `"Invalid balance type: ${typeof balance}. Should be BigNumber.`
+      `"Invalid balance type: ${typeof balance}. Should be BigNumber.`,
     );
   }
 
@@ -41,7 +41,7 @@ export function bigNumberToTrimmed(
       maximumFractionDigits: fixed,
     })
       .format(
-        parseFloat(`${l}.${r?.slice(0, fixed + 1).replace(/0+$/, "") ?? 0}`)
+        parseFloat(`${l}.${r?.slice(0, fixed + 1).replace(/0+$/, "") ?? 0}`),
       )
       .toString();
   }
