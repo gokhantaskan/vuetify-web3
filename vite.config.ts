@@ -55,8 +55,6 @@ export default defineConfig({
     exclude: ["@ethersproject/hash", "wrtc", "http"],
     include: [
       "@web3-onboard/core",
-      "@web3-onboard/gas",
-      "@web3-onboard/sequence",
       "js-sha3",
       "@ethersproject/bignumber",
       "color",
